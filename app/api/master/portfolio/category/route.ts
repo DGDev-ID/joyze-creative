@@ -12,7 +12,7 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const name = searchParams.get("name") ?? "";
 
-        const data = await prisma.mService.findMany({
+        const data = await prisma.mPortfolioCategory.findMany({
             where: name
                 ? {
                     name: {
@@ -37,27 +37,17 @@ export async function POST(req: Request) {
 
     try {
         const body = await req.json();
-        const parsed = await storeUpdateSchema.safeParseAsync(body);
+        const parsed = await storeUpdateSchema.safeParse(body);
 
         if (!parsed.success) return validationError(parsed.error.flatten());
 
-        const data = await prisma.mService.create({
+        const data = await prisma.mPortfolioCategory.create({
             data: {
-                icon: parsed.data.icon,
                 name: parsed.data.name,
-                description: parsed.data.description,
-                unit: parsed.data.unit,
-                status: parsed.data.status,
-
-                serviceCategories: {
-                    create: parsed.data.categories.map(id => ({
-                        category_id: id
-                    }))
-                }
             }
         })
 
-        return success(data, "Service berhasil dibuat")
+        return success(data, "Portfolio category berhasil dibuat")
     } catch (e: any) {
         return fail(e.message);
     }

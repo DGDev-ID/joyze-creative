@@ -7,12 +7,12 @@ import { adminMiddleware } from "@/app/api/middleware/admin.middleware";
 export async function GET(req: Request) {
     const mid = await adminMiddleware(req);
     if (mid) return mid;
-    
+
     try {
         const { searchParams } = new URL(req.url);
         const name = searchParams.get("name") ?? "";
 
-        const data = await prisma.mService.findMany({
+        const data = await prisma.mPortfolio.findMany({
             where: name
                 ? {
                     name: {
@@ -41,23 +41,25 @@ export async function POST(req: Request) {
 
         if (!parsed.success) return validationError(parsed.error.flatten());
 
-        const data = await prisma.mService.create({
+        const data = await prisma.mPortfolio.create({
             data: {
-                icon: parsed.data.icon,
                 name: parsed.data.name,
                 description: parsed.data.description,
-                unit: parsed.data.unit,
-                status: parsed.data.status,
 
-                serviceCategories: {
+                portfolioCategories: {
                     create: parsed.data.categories.map(id => ({
                         category_id: id
+                    }))
+                },
+                portfolioImages: {
+                    create: parsed.data.img_urls.map(url => ({
+                        img_url: url
                     }))
                 }
             }
         })
 
-        return success(data, "Service berhasil dibuat")
+        return success(data, "Portfolio category berhasil dibuat")
     } catch (e: any) {
         return fail(e.message);
     }
