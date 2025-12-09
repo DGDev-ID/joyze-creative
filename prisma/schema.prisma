@@ -92,6 +92,7 @@ model ServiceTypeDescription {
 // Master Talent
 model MTalents {
   id             Int      @id @default(autoincrement())
+  name           String
   img_url        String
   jobdesc        String
   detail_jobdesc String
