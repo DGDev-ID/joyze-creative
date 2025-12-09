@@ -221,3 +221,21 @@ model OrderLog {
 
   @@map("order_logs")
 }
+
+// User 
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  password   String
+  role       UserRole
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("users")
+}
