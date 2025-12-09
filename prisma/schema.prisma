@@ -12,3 +12,212 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// Master Service
+model MServiceCategory {
+  id                Int               @id @default(autoincrement())
+  name              String
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  serviceCategories ServiceCategory[]
+
+  @@map("m_service_categories")
+}
+
+enum MServiceUnit {
+  MONTH
+  SESSION
+}
+
+enum MServiceStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model MService {
+  id                Int               @id @default(autoincrement())
+  icon              String
+  name              String
+  description       String
+  unit              MServiceUnit
+  status            MServiceStatus
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  serviceCategories ServiceCategory[]
+  serviceTypes      ServiceType[]
+
+  @@map("m_services")
+}
+
+model ServiceCategory {
+  id          Int      @id @default(autoincrement())
+  service_id  Int
+  category_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  service  MService         @relation(fields: [service_id], references: [id])
+  category MServiceCategory @relation(fields: [category_id], references: [id])
+
+  @@map("service_categories")
+}
+
+model ServiceType {
+  id         Int      @id @default(autoincrement())
+  service_id Int
+  name       String
+  price      Decimal
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  service                 MService                 @relation(fields: [service_id], references: [id])
+  serviceTypeDescriptions ServiceTypeDescription[]
+  transactions            Transaction[]
+
+  @@map("service_types")
+}
+
+model ServiceTypeDescription {
+  id              Int      @id @default(autoincrement())
+  service_type_id Int
+  description     String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  service_type ServiceType @relation(fields: [service_type_id], references: [id])
+
+  @@map("service_type_descriptions")
+}
+
+// Master Talent
+model MTalents {
+  id             Int      @id @default(autoincrement())
+  img_url        String
+  jobdesc        String
+  detail_jobdesc String
+  portfolio_url  String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  @@map("m_talents")
+}
+
+// Master Portfolio
+model MPortfolioCategory {
+  id                  Int                 @id @default(autoincrement())
+  name                String
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  portfolioCategories PortfolioCategory[]
+
+  @@map("m_portfolio_categories")
+}
+
+model MPortfolio {
+  id                  Int                 @id @default(autoincrement())
+  name                String
+  description         String
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  portfolioCategories PortfolioCategory[]
+  portfolioImages     PortfolioImage[]
+
+  @@map("m_portfolios")
+}
+
+model PortfolioCategory {
+  id           Int      @id @default(autoincrement())
+  portfolio_id Int
+  category_id  Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  portfolio MPortfolio         @relation(fields: [portfolio_id], references: [id])
+  category  MPortfolioCategory @relation(fields: [category_id], references: [id])
+
+  @@map("portfolio_categories")
+}
+
+model PortfolioImage {
+  id           Int      @id @default(autoincrement())
+  portfolio_id Int
+  img_url      String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  portfolio MPortfolio @relation(fields: [portfolio_id], references: [id])
+
+  @@map("portfolio_images")
+}
+
+// Transaction
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Transaction {
+  id              Int               @id @default(autoincrement())
+  service_type_id Int
+  total_price     Decimal
+  cust_name       String
+  cust_email      String
+  cust_phone      String
+  start_date      DateTime
+  end_date        DateTime
+  snap_token      String?
+  status          TransactionStatus
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  serviceType     ServiceType      @relation(fields: [service_type_id], references: [id])
+  transactionLogs TransactionLog[]
+  orders          Order[]
+
+  @@map("transactions")
+}
+
+model TransactionLog {
+  id             Int      @id @default(autoincrement())
+  transaction_id Int
+  log            String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  transaction Transaction @relation(fields: [transaction_id], references: [id])
+
+  @@map("transaction_logs")
+}
+
+// Order
+enum OrderStatus {
+  PENDING
+  DONE
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  transaction_id Int
+  status         OrderStatus
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+
+  transaction Transaction @relation(fields: [transaction_id], references: [id])
+  orderLogs   OrderLog[]
+
+  @@map("orders")
+}
+
+model OrderLog {
+  id         Int      @id @default(autoincrement())
+  order_id   Int
+  log        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  order Order @relation(fields: [order_id], references: [id])
+
+  @@map("order_logs")
+}
