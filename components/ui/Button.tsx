@@ -12,6 +12,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   fullWidth?: boolean;
+  pill?: boolean;
   children: ReactNode;
 }
 
@@ -26,10 +27,11 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   className = "",
   children,
+  pill = false,
   ...props
 }) => {
   const baseStyles =
-    "inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-md";
+    "inline-flex items-center justify-center font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-md";
 
   const sizeStyles: Record<string, string> = {
     sm: "h-8 px-3 text-sm rounded-md",
@@ -37,26 +39,29 @@ const Button: React.FC<ButtonProps> = ({
     lg: "h-14 px-8 text-base rounded-md",
   };
 
+  // pill-specific sizing: rounded-full, consistent height and min-width so all pills match
+  const pillStyles = "h-10 px-4 text-sm rounded-full min-w-[120px]";
+
   const variantStyles: Record<string, string> = {
     // Uses CSS variables defined in app/globals.css (e.g. --bg-primary, --bg-secondary, --bg-danger)
     primary:
-      "bg-[var(--bg-primary)] text-white hover:opacity-90 focus:ring-[var(--bg-primary)]",
+      "bg-[var(--bg-primary)] text-white hover:opacity-90",
     "primary-light":
-      "bg-[var(--bg-light)] text-[color:var(--bg-primary)] hover:opacity-90 focus:ring-[var(--bg-light)]",
+      "bg-[var(--bg-light)] text-[color:var(--bg-primary)] hover:opacity-90",
     "primary-line":
-      "bg-white text-[color:var(--bg-primary)] border border-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:text-white focus:ring-[var(--bg-primary)]",
+      "bg-white text-[color:var(--bg-primary)] border border-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:text-white",
     secondary:
-      "bg-[var(--bg-secondary)] text-[color:var(--foreground)] hover:opacity-90 focus:ring-[var(--bg-secondary)]",
+      "bg-[var(--bg-secondary)] text-[color:var(--foreground)] hover:opacity-90",
     ghost:
-      "bg-transparent text-[color:var(--bg-primary)] border border-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:text-white focus:ring-[var(--bg-primary)]",
+      "bg-transparent text-[color:var(--bg-primary)] border border-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:text-white",
     danger:
-      "bg-[var(--bg-danger)] text-white hover:opacity-90 focus:ring-[var(--bg-danger)]",
+      "bg-[var(--bg-danger)] text-white hover:opacity-90",
     "danger-line":
-      "bg-white text-[var(--bg-danger)] border border-[var(--bg-danger)] hover:bg-[var(--bg-danger)] hover:text-white focus:ring-[var(--bg-danger)]",
+      "bg-white text-[var(--bg-danger)] border border-[var(--bg-danger)] hover:bg-[var(--bg-danger)] hover:text-white",
   };
 
   const appliedVariant = variantStyles[variant] || variantStyles.primary;
-  const appliedSize = sizeStyles[size] || sizeStyles.md;
+  const appliedSize = pill ? pillStyles : (sizeStyles[size] || sizeStyles.md);
 
   // spinner color: when button background is white (line variants) or ghost, spinner should use primary color
   const spinnerBorderClass = variant === "primary-line" || variant === "danger-line" || variant === "ghost"
