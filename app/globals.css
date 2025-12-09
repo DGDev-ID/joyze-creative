@@ -10,13 +10,17 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
   /* Added brand color palette */
   --color-orange: #FFAD33; /* Orange */
-  --color-fawn: #FB877C;   /* Fawn */
   --color-maize: #FFF183;  /* Maize */
-  --color-primary: var(--color-orange); /* primary */
-  --color-dark: var(--color-fawn);     /* dark */
-  --color-light: var(--color-maize);   /* light */
+  --color-engine-red: #CC1400; /* Engine Red */
+  --color-grey: #F3F4F6; /* Grey */
+
+  --bg-primary: var(--color-orange); /* primary */
+  --bg-light: var(--color-maize);   /* light */
+  --bg-danger: var(--color-engine-red); /* danger */
+  --bg-secondary: var(--color-grey); /* secondary */
 }
 
 @media (prefers-color-scheme: dark) {
