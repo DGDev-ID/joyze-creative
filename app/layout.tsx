@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Joyze Creative Agency",
   description: "Platform for creative professionals and agencies.",
+  icons: {
+    icon: "/logo-joyze.svg",
+    shortcut: "/logo-joyze.svg",
+    apple: "/logo-joyze.svg",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
