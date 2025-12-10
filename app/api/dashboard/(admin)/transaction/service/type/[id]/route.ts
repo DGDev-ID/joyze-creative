@@ -1,10 +1,10 @@
 import { prisma } from "@/app/lib/prisma";
 import { success, fail, validationError } from "@/app/lib/response";
 
-// Index
+// Show
 export async function GET(req: Request, { params }: any) {
     try {
-        const service_id = Number(params.service_id);
+        const service_id = Number(params.id);
         const data = await prisma.serviceType.findMany({
             where: {
                 service_id
