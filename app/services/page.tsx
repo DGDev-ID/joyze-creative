@@ -19,6 +19,20 @@ export default function Services() {
 	const [activeCategory, setActiveCategory] = useState("All Services");
 	const services = SERVICES;
 
+	// map service ids to the category they belong to (used for filtering)
+	const categoryMap: Record<string, string> = {
+		"content-creation": "Creative Production",
+		"videography": "Visual Storytelling",
+		"photography": "Visual Storytelling",
+		"influencer": "Influencer Marketing",
+		"ads": "Digital Strategy",
+		"social": "Digital Strategy",
+	};
+
+	const filteredServices = activeCategory === "All Services"
+		? services
+		: services.filter((s) => categoryMap[s.id] === activeCategory);
+
 	// modal & booking form state
 	const [modalOpen, setModalOpen] = useState(false);
 	const [booking, setBooking] = useState(() => ({
@@ -69,7 +83,7 @@ export default function Services() {
 				{/* Service cards */}
 				<div className="mt-12">
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-						{services.map((s, idx) => (
+						{filteredServices.length > 0 ? filteredServices.map((s, idx) => (
 							<MotionDiv
 								key={s.id}
 								initial={{ opacity: 0, y: 10 }}
@@ -89,7 +103,9 @@ export default function Services() {
 									tiers={s.tiers}
 								/>
 							</MotionDiv>
-						))}
+																)) : (
+																	<div className="text-center col-span-full text-gray-500">No services found for {activeCategory}.</div>
+																)}
 					</div>
 
 					{/* Booking modal (component) */}
