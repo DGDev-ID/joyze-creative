@@ -74,7 +74,7 @@ export default function Home() {
       </div>
 
       {/* Services section */}
-  <section className="bg-(--bg-light)/10 text-background py-40">
+  <section className="bg-(--bg-light)/10 text-gray-900 py-40">
         <div className="max-w-7xl mx-auto px-6 relative isolate">
           {/* Decorative blobs for services section (behind cards) */}
           <span className="absolute -right-8 -top-6 w-40 h-40 rounded-full bg-(--bg-primary) opacity-20 animate-float z-0 pointer-events-none" aria-hidden />
@@ -116,7 +116,7 @@ export default function Home() {
       </section>
 
       {/* Recent Work section */}
-  <section className="text-background py-40">
+  <section className="text-gray-900 py-40">
   <div className="max-w-7xl mx-auto px-6 relative isolate">
     {/* Decorative blobs for Recent Work section (behind work cards) */}
     <span className="absolute -right-10 -top-6 w-44 h-44 rounded-full bg-(--bg-primary) opacity-12 blur-2xl animate-float z-0 pointer-events-none" aria-hidden />
@@ -146,7 +146,7 @@ export default function Home() {
       </section>
 
       {/* CTA section */}
-  <section className="py-40 bg-(--bg-light)/10 text-background">
+  <section className="py-40 bg-(--bg-light)/10 text-gray-900">
         <div className="max-w-4xl mx-auto px-6 relative isolate">
           {/* Decorative blobs for CTA section (behind card) */}
           <span className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-(--bg-primary) opacity-18 animate-float z-20 pointer-events-none" aria-hidden />

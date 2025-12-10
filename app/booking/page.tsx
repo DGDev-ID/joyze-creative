@@ -27,7 +27,7 @@ export default function BookingPage() {
 	const [modalOpen, setModalOpen] = useState(false);
 
 	return (
-					<div className="w-full py-12 text-[var(--background)] relative">
+					<div className="w-full py-12 text-gray-900 relative">
 						<span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-[var(--bg-primary)] opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
 						<span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-[var(--bg-light)] opacity-30 blur-lg animate-float" aria-hidden />
 						{/* extra decorative blobs */}
