@@ -27,12 +27,12 @@ export default function BookingPage() {
 	const [modalOpen, setModalOpen] = useState(false);
 
 	return (
-					<div className="w-full py-12 text-gray-900 relative">
-						<span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-[var(--bg-primary)] opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
-						<span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-[var(--bg-light)] opacity-30 blur-lg animate-float" aria-hidden />
-						{/* extra decorative blobs */}
-						<span className="absolute left-10 top-20 w-28 h-28 rounded-full bg-[var(--bg-light)] opacity-20 blur-xl animate-float" aria-hidden />
-						<span className="absolute -right-20 bottom-20 w-56 h-56 rounded-full bg-[var(--bg-primary)] opacity-12 blur-3xl animate-float" aria-hidden />
+		<div className="w-full py-12 text-gray-900 relative">
+			<span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-[var(--bg-primary)] opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
+			<span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-[var(--bg-light)] opacity-30 blur-lg animate-float" aria-hidden />
+			{/* extra decorative blobs */}
+			<span className="absolute left-10 top-20 w-28 h-28 rounded-full bg-[var(--bg-light)] opacity-20 blur-xl animate-float" aria-hidden />
+			<span className="absolute -right-20 bottom-20 w-56 h-56 rounded-full bg-[var(--bg-primary)] opacity-12 blur-3xl animate-float" aria-hidden />
 			<div className="max-w-7xl mx-auto px-4 text-center">
 				<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
 					<h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
@@ -49,7 +49,7 @@ export default function BookingPage() {
 					</p>
 				</MotionDiv>
 
-				<div className="grid md:grid-cols-3 gap-8 text-left mb-12 items-stretch">
+				<div className="grid lg:grid-cols-3 gap-8 text-left mb-12 items-start">
 					{/* Column 1: Select Your Service */}
 					<MotionDiv className="h-full" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
 					<div className="bg-white p-6 rounded-lg shadow-md ring-1 ring-gray-50 h-full">
@@ -63,7 +63,7 @@ export default function BookingPage() {
 							Choose from our diverse range of creative marketing solutions tailored to your needs.
 						</p>
 						<div className="relative">
-							<div className="bg-white p-3 rounded-md border border-gray-200 flex justify-between items-center">
+							<div className="bg-white p-3 rounded-md border border-gray-200 flex justify-between items-center cursor-pointer">
 								<span>{selectedService}</span>
 								<ChevronDown className="w-4 h-4 text-gray-500" />
 							</div>
