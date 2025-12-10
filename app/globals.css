@@ -10,12 +10,23 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Added brand color palette */
+  --color-orange: #FFAD33; /* Orange */
+  --color-maize: #FFF183;  /* Maize */
+  --color-engine-red: #CC1400; /* Engine Red */
+  --color-grey: #F3F4F6; /* Grey */
+
+  --bg-primary: var(--color-orange); /* primary */
+  --bg-light: var(--color-maize);   /* light */
+  --bg-danger: var(--color-engine-red); /* danger */
+  --bg-secondary: var(--color-grey); /* secondary */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #f7f7f7;
   }
 }
 
@@ -23,4 +34,25 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Floating blob animation used for decorative background blobs */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-50px);
+    -webkit-transform: translateY(-50px);
+    -moz-transform: translateY(-50px);
+    -ms-transform: translateY(-50px);
+    -o-transform: translateY(-50px);
+}
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }

@@ -1,0 +1,56 @@
+import React from "react";
+import Card from "@/components/ui/Card";
+import { MotionDiv } from "@/components/ui/MotionWrap";
+import Image from "next/image";
+import { talents } from "@/components/data/talent";
+export default function Talent() {
+	return (
+		<div className="w-full py-20 text-[var(--background)] relative">
+			<span className="absolute -right-10 -top-8 w-44 h-44 rounded-full bg-[var(--bg-primary)] opacity-20 blur-2xl transform rotate-12 animate-float" aria-hidden />
+			<span className="absolute -left-8 -bottom-6 w-36 h-36 rounded-full bg-[var(--bg-light)] opacity-25 blur-lg animate-float" aria-hidden />
+			{/* extra decorative blobs */}
+			<span className="absolute left-4 top-16 w-28 h-28 rounded-full bg-[var(--bg-light)] opacity-18 blur-xl animate-float" aria-hidden />
+			<span className="absolute -right-16 bottom-10 w-44 h-44 rounded-full bg-[var(--bg-primary)] opacity-12 blur-3xl transform rotate-6 animate-float" aria-hidden />
+			<div className="max-w-7xl mx-auto px-4 text-center">
+						<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+							<h1 className="text-4xl sm:text-5xl font-extrabold text-[var(--background)] mb-4">
+								Meet Our Creative Talent
+							</h1>
+						</MotionDiv>
+
+						<MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.45, delay: 0.1 }}>
+							<p className="text-lg text-gray-600 max-w-3xl mx-auto mb-10">
+								Discover the passionate individuals behind Joyze Creative Agency. Each
+								talent brings unique skills and creativity to elevate your brand&apos;s
+								presence.
+							</p>
+						</MotionDiv>
+
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+							{talents.map((t, idx) => (
+								<MotionDiv
+									key={t.id}
+									initial={{ opacity: 0, y: 10 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.45, delay: idx * 0.06 }}
+									whileHover={{ scale: 1.02 }}
+									whileTap={{ scale: 0.98 }}
+								>
+									<Card className="p-6">
+										<div className="flex flex-col items-center text-center">
+											<div className="w-28 h-28 rounded-full overflow-hidden mb-4">
+												<Image src={t.avatar} alt={t.name} width={112} height={112} className="w-full h-full object-cover" />
+											</div>
+											<h3 className="text-lg font-semibold">{t.name}</h3>
+											<div className="text-sm text-gray-500 mb-3">{t.role}</div>
+											<p className="text-sm text-gray-600">{t.bio}</p>
+										</div>
+									</Card>
+								</MotionDiv>
+							))}
+						</div>
+			</div>
+		</div>
+	);
+}
+
