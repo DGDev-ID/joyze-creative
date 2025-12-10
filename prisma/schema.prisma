@@ -159,16 +159,17 @@ enum TransactionStatus {
 }
 
 model Transaction {
-  id              Int               @id @default(autoincrement())
-  service_type_id Int
-  total_price     Decimal
-  cust_name       String
-  cust_email      String
-  cust_phone      String
-  start_date      DateTime
-  end_date        DateTime
-  snap_token      String?
-  status          TransactionStatus
+  id                    Int               @id @default(autoincrement())
+  service_type_id       Int
+  total_price           Decimal
+  cust_name             String
+  cust_email            String
+  cust_phone            String
+  start_date            DateTime
+  end_date              DateTime
+  midtrans_order_id     String? @unique
+  midtrans_redirect_url String?
+  status                TransactionStatus
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

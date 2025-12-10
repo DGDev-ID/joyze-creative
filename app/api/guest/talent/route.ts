@@ -1,0 +1,12 @@
+import { prisma } from "@/app/lib/prisma";
+import { success, fail, validationError } from "@/app/lib/response";
+
+// Index
+export async function GET(req: Request) {
+    try {
+        const data = await prisma.mTalents.findMany()
+        return success(data);
+    } catch (e: any) {
+        return fail(e.message);
+    }
+}
