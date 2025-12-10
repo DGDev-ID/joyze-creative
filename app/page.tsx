@@ -75,7 +75,12 @@ export default function Home() {
 
       {/* Services section */}
   <section className="bg-(--bg-light)/10 text-background py-40">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 relative isolate">
+          {/* Decorative blobs for services section (behind cards) */}
+          <span className="absolute -right-8 -top-6 w-40 h-40 rounded-full bg-(--bg-primary) opacity-20 animate-float z-0 pointer-events-none" aria-hidden />
+          <span className="absolute -left-6 -bottom-8 w-36 h-36 rounded-full bg-(--bg-light) opacity-25 animate-float z-0 pointer-events-none" aria-hidden />
+          <span className="absolute left-6 -top-4 w-24 h-24 rounded-full bg-(--bg-primary) opacity-12 animate-float z-0 pointer-events-none" aria-hidden />
+          <span className="absolute right-20 bottom-6 w-56 h-56 rounded-full bg-(--bg-light) opacity-8 animate-float z-20 pointer-events-none" aria-hidden />
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold">Our Creative Services</h2>
             <p className="mt-3 text-gray-400 max-w-2xl mx-auto">We blend strategy, storytelling, and production to create memorable social experiences that move your audience.</p>
@@ -90,7 +95,7 @@ export default function Home() {
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ delay: 0.05 + idx * 0.06 }}
               >
-                <Card className="p-6 group">
+                <Card className="p-6 group relative z-10">
                   <div className="flex items-start gap-4">
                     <div className="shrink-0">
                       <div className="w-12 h-12 rounded-full flex items-center justify-center bg-linear-to-tr from-(--bg-primary) to-(--bg-light) text-white shadow-md">
@@ -112,7 +117,12 @@ export default function Home() {
 
       {/* Recent Work section */}
   <section className="text-background py-40">
-        <div className="max-w-7xl mx-auto px-6">
+  <div className="max-w-7xl mx-auto px-6 relative isolate">
+    {/* Decorative blobs for Recent Work section (behind work cards) */}
+    <span className="absolute -right-10 -top-6 w-44 h-44 rounded-full bg-(--bg-primary) opacity-12 blur-2xl animate-float z-0 pointer-events-none" aria-hidden />
+    <span className="absolute -left-6 -bottom-6 w-36 h-36 rounded-full bg-(--bg-light) opacity-14 blur-xl animate-float z-0 pointer-events-none" aria-hidden />
+    <span className="absolute left-10 top-10 w-24 h-24 rounded-full bg-(--bg-primary) opacity-8 animate-float z-0 pointer-events-none" aria-hidden />
+    <span className="absolute right-6 bottom-10 w-20 h-20 rounded-full bg-(--bg-light) opacity-10 animate-float z-0 pointer-events-none" aria-hidden />
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold">Our Recent Work</h2>
             <p className="mt-3 text-gray-500 max-w-2xl mx-auto">A selection of recent projects — social campaigns, photography, and video production.</p>
@@ -122,6 +132,7 @@ export default function Home() {
             {portfolio.slice(0, 4).map((item, idx) => (
               <MotionDiv
                 key={item.id}
+                className="relative z-10"
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -136,9 +147,14 @@ export default function Home() {
 
       {/* CTA section */}
   <section className="py-40 bg-(--bg-light)/10 text-background">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-4xl mx-auto px-6 relative isolate">
+          {/* Decorative blobs for CTA section (behind card) */}
+          <span className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-(--bg-primary) opacity-18 animate-float z-20 pointer-events-none" aria-hidden />
+          <span className="absolute -right-6 -bottom-6 w-36 h-36 rounded-full bg-(--bg-light) opacity-22 animate-float z-0 pointer-events-none" aria-hidden />
+          <span className="absolute -right-24 top-6 w-28 h-28 rounded-full bg-(--bg-primary) opacity-10 animate-float z-0 pointer-events-none" aria-hidden />
+          <span className="absolute left-4 -bottom-12 w-20 h-20 rounded-full bg-(--bg-light) opacity-16 animate-float z-0 pointer-events-none" aria-hidden />
           <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 }}>
-            <Card className="p-8 shadow-md hover:shadow-none">
+            <Card className="p-8 shadow-md hover:shadow-none relative z-10">
               <div className="text-center">
               <Sparkles className="mx-auto text-(--bg-primary) mb-4" size={40} />
               <h3 className="text-2xl md:text-3xl font-bold mb-3">Ready to Transform Your Brand?</h3>
