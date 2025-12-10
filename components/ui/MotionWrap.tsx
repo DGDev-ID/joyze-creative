@@ -3,12 +3,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export const MotionDiv: React.FC<any> = ({ children, ...props }) => {
-  return <motion.div {...props}>{children}</motion.div>;
+type MotionDivProps = React.ComponentProps<typeof motion.div> & { children?: React.ReactNode };
+type MotionImgProps = React.ComponentProps<typeof motion.img>;
+
+export const MotionDiv: React.FC<MotionDivProps> = ({ children, ...props }) => {
+  return <motion.div {...(props as MotionDivProps)}>{children}</motion.div>;
 };
 
-export const MotionImg: React.FC<any> = (props) => {
-  return <motion.img {...props} />;
+export const MotionImg: React.FC<MotionImgProps> = (props) => {
+  return <motion.img {...(props as MotionImgProps)} />;
 };
 
 export default MotionDiv;

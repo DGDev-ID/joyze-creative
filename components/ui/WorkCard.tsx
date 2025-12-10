@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 export interface WorkCardProps {
   imageSrc: string;
@@ -10,7 +11,7 @@ const WorkCard: React.FC<WorkCardProps> = ({ imageSrc, title, category }) => {
   return (
     <div className="rounded-lg overflow-hidden bg-white border border-gray-100 shadow-sm group">
       <div className="relative aspect-square bg-gray-100">
-        <img src={imageSrc} alt={title} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+        <Image src={imageSrc} alt={title} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
 
         {/* gradient overlay: appears on hover and fades toward center */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" aria-hidden />

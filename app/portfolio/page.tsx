@@ -89,7 +89,12 @@ const PortfolioPage: React.FC = () => {
       : items.filter((it) => it.category === activeCategory);
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+  <span className="absolute -right-8 -top-10 w-44 h-44 rounded-full bg-[var(--bg-primary)] opacity-20 blur-2xl transform rotate-6 animate-float" aria-hidden />
+  <span className="absolute -left-6 -bottom-8 w-36 h-36 rounded-full bg-[var(--bg-light)] opacity-25 blur-lg animate-float" aria-hidden />
+      {/* extra decorative blobs */}
+  <span className="absolute left-6 top-6 w-32 h-32 rounded-full bg-[var(--bg-light)] opacity-18 blur-xl animate-float" aria-hidden />
+  <span className="absolute -right-16 bottom-12 w-52 h-52 rounded-full bg-[var(--bg-primary)] opacity-10 blur-3xl animate-float" aria-hidden />
       <section className="text-center py-12 px-4">
         <MotionDiv
           initial={{ opacity: 0, y: -10 }}
@@ -138,7 +143,7 @@ const PortfolioPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredItems.length === 0 ? (
               <div className="col-span-full text-center text-gray-500">
-                No portfolio items found for "{activeCategory}".
+                No portfolio items found for &quot;{activeCategory}&quot;.
               </div>
             ) : (
               filteredItems.map((item, idx) => (

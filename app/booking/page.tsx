@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import Button from "@/components/ui/Button";
 import { MotionDiv } from "@/components/ui/MotionWrap";
 
-import { ChevronDown, Calendar, Clock, Users, CheckCircle } from "lucide-react";
+import { ChevronDown, Calendar, Clock, CheckCircle } from "lucide-react";
 
 export default function BookingPage() {
 	const [selectedService, setSelectedService] = useState(
 		"Social Media Strategy"
 	);
-	const [isDropdownOpen, setDropdownOpen] = useState(true);
 	const services = [
 		"Social Media Strategy",
 		"Content Creation Package",
@@ -24,7 +23,12 @@ export default function BookingPage() {
 	};
 
 	return (
-		<div className="w-full py-12 text-[var(--background)]">
+					<div className="w-full py-12 text-[var(--background)] relative">
+						<span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-[var(--bg-primary)] opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
+						<span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-[var(--bg-light)] opacity-30 blur-lg animate-float" aria-hidden />
+						{/* extra decorative blobs */}
+						<span className="absolute left-10 top-20 w-28 h-28 rounded-full bg-[var(--bg-light)] opacity-20 blur-xl animate-float" aria-hidden />
+						<span className="absolute -right-20 bottom-20 w-56 h-56 rounded-full bg-[var(--bg-primary)] opacity-12 blur-3xl animate-float" aria-hidden />
 			<div className="max-w-7xl mx-auto px-4 text-center">
 				<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
 					<h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
@@ -35,7 +39,7 @@ export default function BookingPage() {
 
 				<MotionDiv initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.45, delay: 0.12 }}>
 					<p className="text-lg max-w-2xl mx-auto mb-12">
-						Experience Joyze Creative Agency's effortless automated booking
+						Experience Joyze Creative Agency&apos;s effortless automated booking
 						system. Select services, schedule with ease, and preview your
 						invoice in real-time.
 					</p>

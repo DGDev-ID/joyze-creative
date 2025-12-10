@@ -3,6 +3,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import Button from "../ui/Button";
 
 const navItems = ["Home", "Services", "Talent", "Booking", "Portfolio"];
@@ -34,7 +35,7 @@ const Headbar: React.FC = () => {
           <nav className="flex items-center gap-6">
             {/* Logo / brand */}
             <Link href="/" className="inline-flex items-center">
-              <img src="/logo-joyze.svg" alt="Joyze" className="h-11 w-auto" />
+              <Image src="/logo-joyze.svg" alt="Joyze" width={44} height={44} className="h-11 w-auto" />
             </Link>
 
             {/* Nav links */}
