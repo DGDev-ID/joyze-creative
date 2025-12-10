@@ -5,7 +5,7 @@ import Image from "next/image";
 import { talents } from "@/components/data/talent";
 export default function Talent() {
 	return (
-		<div className="w-full py-20 text-[var(--background)] relative">
+		<div className="w-full py-20 text-gray-900 relative">
 			<span className="absolute -right-10 -top-8 w-44 h-44 rounded-full bg-[var(--bg-primary)] opacity-20 blur-2xl transform rotate-12 animate-float" aria-hidden />
 			<span className="absolute -left-8 -bottom-6 w-36 h-36 rounded-full bg-[var(--bg-light)] opacity-25 blur-lg animate-float" aria-hidden />
 			{/* extra decorative blobs */}
@@ -13,7 +13,7 @@ export default function Talent() {
 			<span className="absolute -right-16 bottom-10 w-44 h-44 rounded-full bg-[var(--bg-primary)] opacity-12 blur-3xl transform rotate-6 animate-float" aria-hidden />
 			<div className="max-w-7xl mx-auto px-4 text-center">
 						<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-							<h1 className="text-4xl sm:text-5xl font-extrabold text-[var(--background)] mb-4">
+							<h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
 								Meet Our Creative Talent
 							</h1>
 						</MotionDiv>

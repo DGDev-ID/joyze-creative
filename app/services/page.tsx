@@ -54,7 +54,7 @@ export default function Services() {
 							<span className="absolute -right-6 top-6 w-32 h-32 rounded-full bg-(--bg-primary) opacity-15 blur-xl transform rotate-12 animate-float" aria-hidden />
 							<span className="absolute left-10 -bottom-6 w-24 h-24 rounded-full bg-(--bg-light) opacity-18 blur-lg animate-float" aria-hidden />
 								<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-									<h1 className="text-4xl sm:text-5xl font-extrabold text-background mb-4">
+									<h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
 										Our Creative Services
 									</h1>
 								</MotionDiv>
