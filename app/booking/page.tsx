@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Button from "@/components/ui/Button";
 import { MotionDiv } from "@/components/ui/MotionWrap";
+import BookingModal from "@/components/ui/BookingModal";
+import { services as SERVICES } from "@/components/data/services";
 
 import { ChevronDown, Calendar, Clock, CheckCircle } from "lucide-react";
 
@@ -21,6 +23,8 @@ export default function BookingPage() {
 		setSelectedService(service);
 		// dropdown remains open per design
 	};
+
+	const [modalOpen, setModalOpen] = useState(false);
 
 	return (
 					<div className="w-full py-12 text-[var(--background)] relative">
@@ -165,8 +169,17 @@ export default function BookingPage() {
 				</div>
 
 					<MotionDiv initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.06 }} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-						<Button size="lg">Start Your Booking Journey</Button>
+						<Button size="lg" onClick={() => setModalOpen(true)}>Start Your Booking Journey</Button>
 					</MotionDiv>
+
+					{/* Booking modal (shared) */}
+					<BookingModal
+						open={modalOpen}
+						onClose={() => setModalOpen(false)}
+						services={SERVICES}
+						requireServiceSelection
+						onSubmit={(data) => { console.log('Booking from booking page:', data); setModalOpen(false); }}
+					/>
 			</div>
 		</div>
 	);

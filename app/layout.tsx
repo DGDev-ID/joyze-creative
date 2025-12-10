@@ -19,20 +19,12 @@ export const metadata: Metadata = {
   description: "Platform for creative professionals and agencies.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Headbar />
-        <div className="min-h-screen bg-white">
-          {children}
-        </div>
+        <div className="min-h-screen bg-white">{children}</div>
         <Footer />
       </body>
     </html>

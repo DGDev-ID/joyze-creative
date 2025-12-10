@@ -1,0 +1,258 @@
+"use client";
+
+import React, { useEffect } from "react";
+import Modal from "@/components/ui/Modal";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import { ServiceTier } from "@/components/ui/ServiceCard";
+import { User, Mail, Phone, Calendar, ChevronDown } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
+export type ServiceItem = { id: string; title: string; description?: string; tiers: ServiceTier[] };
+
+export type BookingData = {
+  cust_name: string;
+  cust_email: string;
+  cust_phone: string;
+  service_id: string;
+  service_type_id: string;
+  start_date: string;
+  end_date: string;
+};
+
+const bookingSchema = z.object({
+  cust_name: z.string().min(2, "Please enter your name"),
+  cust_email: z.string().email("Enter a valid email"),
+  cust_phone: z.string().optional(),
+  service_id: z.string().min(1, "Please select a service"),
+  service_type_id: z.string().min(1, "Please select a service type"),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof bookingSchema>;
+
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  services: ServiceItem[];
+  initial?: Partial<BookingData>;
+  onSubmit?: (data: BookingData) => void;
+  /** If true, require the user to explicitly select a service (service select starts empty) */
+  requireServiceSelection?: boolean;
+}
+
+export default function BookingModal({ open, onClose, services, initial = {}, onSubmit, requireServiceSelection = false }: Props) {
+  const defaultService = services.length > 0 ? services[0].id : "";
+
+  const defaultValues: FormValues = {
+    cust_name: initial.cust_name ?? "",
+    cust_email: initial.cust_email ?? "",
+    cust_phone: initial.cust_phone ?? undefined,
+    service_id: (requireServiceSelection ? (initial.service_id ?? "") : (initial.service_id ?? defaultService)) as string,
+    service_type_id: (initial.service_type_id ?? (requireServiceSelection ? "" : "0")) as string,
+    start_date: initial.start_date ?? undefined,
+    end_date: initial.end_date ?? undefined,
+  };
+
+  const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<FormValues>({
+    resolver: zodResolver(bookingSchema),
+    defaultValues,
+    mode: "onTouched",
+  });
+
+  // reset when modal opens or initial/services change
+  useEffect(() => {
+    if (open) {
+      reset(defaultValues);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, services]);
+
+  const watchedStart = watch("start_date");
+  const watchedServiceId = watch("service_id");
+
+  // auto-calc end date when start changes
+  useEffect(() => {
+    if (watchedStart) {
+      const dt = new Date(watchedStart);
+      dt.setDate(dt.getDate() + 30);
+      const yyyy = dt.getFullYear();
+      const mm = String(dt.getMonth() + 1).padStart(2, "0");
+      const dd = String(dt.getDate()).padStart(2, "0");
+      setValue("end_date", `${yyyy}-${mm}-${dd}`);
+    } else {
+      setValue("end_date", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedStart]);
+
+  // when service changes, reset service_type to 0 (or empty)
+  useEffect(() => {
+    if (watchedServiceId) {
+      setValue("service_type_id", "0");
+    } else {
+      setValue("service_type_id", "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedServiceId]);
+
+  const submit = (data: FormValues) => {
+    const normalized: BookingData = {
+      cust_name: data.cust_name,
+      cust_email: data.cust_email,
+      cust_phone: data.cust_phone ?? "",
+      service_id: data.service_id,
+      service_type_id: data.service_type_id,
+      start_date: data.start_date ?? "",
+      end_date: data.end_date ?? "",
+    };
+
+    const simulateBookingApi = async () => {
+      // simulate latency
+      await new Promise((r) => setTimeout(r, 700));
+      // static successful contract response
+      return {
+        status: "success",
+        message: "Transaksi berhasil dibuat, silahkan selesaikan pembayaran anda",
+        data: { payment_url: "" },
+      } as const;
+    };
+
+    (async () => {
+      try {
+  const res = await simulateBookingApi();
+        if (res.status === "success") {
+          toast.success(res.message);
+          if (onSubmit) onSubmit(normalized);
+          else console.log("Booking submitted:", normalized);
+          onClose();
+        } else {
+          // error path: show message from contract
+          toast.error(res.message ?? "Unexpected error");
+        }
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err ?? "Network error");
+        toast.error(msg);
+      }
+    })();
+  };
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Order Service"
+      footer={(
+        <div className="flex justify-end gap-2">
+          <Button variant="primary-line" onClick={onClose}>Cancel</Button>
+          <Button variant="primary" onClick={handleSubmit(submit)}>Submit Booking</Button>
+        </div>
+      )}
+    >
+      <form className="space-y-4 text-left" onSubmit={handleSubmit(submit)}>
+        <p className="text-sm text-gray-500">Fill out the form below to place your service order.</p>
+
+        <div>
+          <Input
+            label="Customer Name"
+            {...register("cust_name")}
+            name="cust_name"
+            required
+            prefix={<User className="w-4 h-4" />}
+            error={errors.cust_name?.message}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label="Customer Phone"
+            type="tel"
+            {...register("cust_phone")}
+            name="cust_phone"
+            prefix={<Phone className="w-4 h-4" />}
+            error={errors.cust_phone?.message}
+          />
+
+          <Input
+            label="Customer Email"
+            type="email"
+            {...register("cust_email")}
+            name="cust_email"
+            required
+            prefix={<Mail className="w-4 h-4" />}
+            error={errors.cust_email?.message}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="service-select" className="block text-sm font-medium text-gray-700 mb-2">Select Service</label>
+            <div className="relative">
+              <select
+                id="service-select"
+                title="Select Service"
+                className="w-full bg-white border rounded-md transition-shadow duration-150 focus:outline-none border-gray-200 focus:ring-2 focus:ring-(--bg-primary)/30 px-3 py-2 h-11 appearance-none"
+                {...register("service_id")}
+              >
+                {requireServiceSelection && <option value="">-- Select a service --</option>}
+                {services.map((sv) => (
+                  <option key={sv.id} value={sv.id}>{sv.title}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+            </div>
+            {errors.service_id && <p className="mt-2 text-xs text-(--bg-danger)">{errors.service_id.message}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="service-type-select" className="block text-sm font-medium text-gray-700 mb-2">Select Service Type</label>
+            <div className="relative">
+              <select
+                id="service-type-select"
+                title="Select Service Type"
+                className="w-full bg-white border rounded-md transition-shadow duration-150 focus:outline-none border-gray-200 focus:ring-2 focus:ring-(--bg-primary)/30 px-3 py-2 h-11 appearance-none"
+                {...register("service_type_id")}
+                disabled={!watchedServiceId}
+              >
+                {watchedServiceId
+                  ? (() => {
+                      const svc = services.find((x) => x.id === watchedServiceId) || services[0];
+                      return svc.tiers.map((t, i) => (
+                        <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
+                      ));
+                    })()
+                  : <option value="">-- Select a service first --</option>
+                }
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+            </div>
+            {errors.service_type_id && <p className="mt-2 text-xs text-(--bg-danger)">{errors.service_type_id.message}</p>}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Input
+            label="Start Date"
+            type="date"
+            {...register("start_date")}
+            prefix={<Calendar className="w-4 h-4" />}
+            error={errors.start_date?.message}
+          />
+
+          <div>
+            <Input
+              label="End Date"
+              type="date"
+              value={watch("end_date") ?? ""}
+              disabled
+            />
+            <p className="mt-2 text-xs text-gray-500">End date is automatically set to 30 days after the start date.</p>
+          </div>
+        </div>
+      </form>
+    </Modal>
+  );
+}

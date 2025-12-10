@@ -19,6 +19,10 @@ type ServiceCardProps = {
   tiers: ServiceTier[];
   /** optional icon node to render above title */
   icon?: React.ReactNode;
+  /** optional id used to identify service when booking */
+  serviceId?: string | number;
+  /** called when user clicks Book Now; provides serviceId and default tier index */
+  onBook?: (serviceId?: string | number, defaultTierIndex?: number) => void;
 };
 
 function formatIDR(amount: number) {
@@ -34,7 +38,7 @@ function formatIDR(amount: number) {
   }
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, tiers, icon }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, tiers, icon, serviceId, onBook }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col h-full transform-gpu transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <div className="text-center">
@@ -79,7 +83,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, tiers, ic
       </div>
 
       <div className="mt-6">
-        <Button variant="primary" className="w-full">
+        <Button
+          variant="primary"
+          className="w-full"
+          onClick={() => onBook?.(serviceId ?? title, 0)}
+          aria-label={`Book ${title}`}
+        >
           Book Now
         </Button>
       </div>

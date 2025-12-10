@@ -1,18 +1,24 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import WorkCard from "../components/ui/WorkCard";
-import { Edit3, Camera, Video, Users, Sparkles, Megaphone, Share2 } from "lucide-react";
 import MotionDiv, { MotionImg } from "../components/ui/MotionWrap";
+import { Sparkles } from "lucide-react";
+import { services } from "../components/data/services";
+import { portfolio } from "../components/data/portfolio";
+import BookingModal from "../components/ui/BookingModal";
 
 export default function Home() {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
       <div className="max-w-7xl mx-auto px-6 py-40">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="relative">
             {/* Decorative blobs for left hero area */}
-            <span className="absolute -left-8 -top-6 w-36 h-36 rounded-full bg-[var(--bg-light)] opacity-30 blur-2xl animate-float" aria-hidden />
+            <span className="absolute -left-8 -top-6 w-36 h-36 rounded-full bg-(--bg-light) opacity-30 blur-2xl animate-float" aria-hidden />
 
             <MotionDiv className="relative z-10" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.6 }}>
               <h1 className="text-4xl sm:text-5xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
@@ -29,6 +35,7 @@ export default function Home() {
                 <Button
                   variant="primary"
                   className="rounded-full px-6 py-3 h-12 text-base"
+                  onClick={() => setModalOpen(true)}
                 >
                   Book a Consultation
                 </Button>
@@ -46,11 +53,11 @@ export default function Home() {
           <div className="hidden md:flex justify-end">
             <div className="relative w-80 h-80 flex items-center justify-center">
               {/* Decorative blurred color blobs behind logo */}
-              <span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-[var(--bg-primary)] opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
-              <span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-[var(--bg-light)] opacity-30 blur-lg animate-float" aria-hidden />
+              <span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-(--bg-primary) opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
+              <span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-(--bg-light) opacity-30 blur-lg animate-float" aria-hidden />
 
               {/* subtle ring */}
-              <span className="absolute w-72 h-72 rounded-full border border-[var(--bg-primary)] opacity-10" aria-hidden />
+              <span className="absolute w-72 h-72 rounded-full border border-(--bg-primary) opacity-10" aria-hidden />
 
               <MotionImg
                 src="/logo-joyze.svg"
@@ -67,7 +74,7 @@ export default function Home() {
       </div>
 
       {/* Services section */}
-      <section className="bg-[var(--bg-light)]/10 text-[var(--background)] py-40">
+  <section className="bg-(--bg-light)/10 text-background py-40">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold">Our Creative Services</h2>
@@ -75,113 +82,36 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.05 }}>
-              <Card className="p-6 group">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--bg-primary)] to-[var(--bg-light)] text-white shadow-md">
-                    <Edit3 size={20} />
-                  </div>
-                </div>
-
-                <div className="mt-1">
-                  <h3 className="font-semibold text-[var(--bg-primary)]">Content Creation</h3>
-                  <p className="text-sm text-gray-400 mt-2">Captivating and unique content tailored for your brand&apos;s voice and audience across all platforms.</p>
-                </div>
-              </div>
-              </Card>
-            </MotionDiv>
-
-            <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.12 }}>
-              <Card className="p-6 group">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--bg-primary)] to-[var(--bg-light)] text-white shadow-md">
-                    <Video size={20} />
-                  </div>
-                </div>
-
-                <div className="mt-1">
-                  <h3 className="font-semibold text-[var(--bg-primary)]">Videography & Motion Graphics</h3>
-                  <p className="text-sm text-gray-400 mt-2">Dynamic video content and engaging motion graphics to tell your story and captivate your audience.</p>
-                </div>
-              </div>
-              </Card>
-            </MotionDiv>
-
-            <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.18 }}>
-              <Card className="p-6 group">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0">
-                  <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--bg-primary)] to-[var(--bg-light)] text-white shadow-md">
-                    <Users size={20} />
-                  </div>
-                </div>
-
-                <div className="mt-1">
-                  <h3 className="font-semibold text-[var(--bg-primary)]">Influencer Collaboration</h3>
-                      <p className="text-sm text-gray-400 mt-2">Connect with relevant influencers to amplify your brand&apos;s message and reach new audiences.</p>
-                </div>
-              </div>
-              </Card>
-            </MotionDiv>
-              
-              <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.24 }}>
+            {services.slice(0, 6).map((s, idx) => (
+              <MotionDiv
+                key={s.id}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: 0.05 + idx * 0.06 }}
+              >
                 <Card className="p-6 group">
                   <div className="flex items-start gap-4">
                     <div className="shrink-0">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--bg-primary)] to-[var(--bg-light)] text-white shadow-md">
-                        <Megaphone size={20} />
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-linear-to-tr from-(--bg-primary) to-(--bg-light) text-white shadow-md">
+                        {s.icon}
                       </div>
                     </div>
 
                     <div className="mt-1">
-                      <h3 className="font-semibold text-[var(--bg-primary)]">Digital Ad Campaigns</h3>
-                      <p className="text-sm text-gray-400 mt-2">Targeted advertising strategies across platforms like Google, Facebook, and Instagram to maximize reach and conversions.</p>
+                      <h3 className="font-semibold text-(--bg-primary)">{s.title}</h3>
+                      <p className="text-sm text-gray-400 mt-2">{s.description}</p>
                     </div>
                   </div>
                 </Card>
               </MotionDiv>
-
-              <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.30 }}>
-                <Card className="p-6 group">
-                  <div className="flex items-start gap-4">
-                    <div className="shrink-0">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--bg-primary)] to-[var(--bg-light)] text-white shadow-md">
-                        <Share2 size={20} />
-                      </div>
-                    </div>
-
-                    <div className="mt-1">
-                      <h3 className="font-semibold text-[var(--bg-primary)]">Social Media Management</h3>
-                      <p className="text-sm text-gray-400 mt-2">Full-service management of your social media channels to boost presence and engagement.</p>
-                    </div>
-                  </div>
-                </Card>
-              </MotionDiv>
-
-              <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: 0.36 }}>
-                <Card className="p-6 group">
-                  <div className="flex items-start gap-4">
-                    <div className="shrink-0">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-tr from-[var(--bg-primary)] to-[var(--bg-light)] text-white shadow-md">
-                        <Camera size={20} />
-                      </div>
-                    </div>
-
-                    <div className="mt-1">
-                      <h3 className="font-semibold text-[var(--bg-primary)]">Brand Photography</h3>
-                      <p className="text-sm text-gray-400 mt-2">Professional photography services to capture your brand&apos;s essence with high-quality visuals.</p>
-                    </div>
-                  </div>
-                </Card>
-              </MotionDiv>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Recent Work section */}
-      <section className="text-[var(--background)] py-40">
+  <section className="text-background py-40">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold">Our Recent Work</h2>
@@ -189,48 +119,28 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <MotionDiv initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.06 }}>
-              <WorkCard
-                imageSrc="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=3"
-                title="Summer Vibes Fashion Campaign"
-                category="Social Media Campaign"
-              />
-            </MotionDiv>
-
-            <MotionDiv initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 }}>
-              <WorkCard
-                imageSrc="https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=2"
-                title="Organic Skincare Launch"
-                category="Product Photography"
-              />
-            </MotionDiv>
-
-            <MotionDiv initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.18 }}>
-              <WorkCard
-                imageSrc="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=3"
-                title="Innovative Gadget Ad Spot"
-                category="Video Production"
-              />
-            </MotionDiv>
-
-            <MotionDiv initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.24 }}>
-              <WorkCard
-                imageSrc="https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=4"
-                title="Local Cafe Brand Identity"
-                category="Graphic Design"
-              />
-            </MotionDiv>
+            {portfolio.slice(0, 4).map((item, idx) => (
+              <MotionDiv
+                key={item.id}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.06 + idx * 0.06 }}
+              >
+                <WorkCard imageSrc={item.imageSrc} title={item.title} category={item.category} />
+              </MotionDiv>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA section */}
-      <section className="py-40 bg-[var(--bg-light)]/10 text-[var(--background)]">
+  <section className="py-40 bg-(--bg-light)/10 text-background">
         <div className="max-w-4xl mx-auto px-6">
           <MotionDiv initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 }}>
             <Card className="p-8 shadow-md hover:shadow-none">
               <div className="text-center">
-              <Sparkles className="mx-auto text-[var(--bg-primary)] mb-4" size={40} />
+              <Sparkles className="mx-auto text-(--bg-primary) mb-4" size={40} />
               <h3 className="text-2xl md:text-3xl font-bold mb-3">Ready to Transform Your Brand?</h3>
               <p className="text-gray-600 mb-6">Let&apos;s discuss how Joyze Creative Agency can help you achieve your social media marketing goals. Contact us for a free consultation today!</p>
 
@@ -248,6 +158,13 @@ export default function Home() {
           </MotionDiv>
         </div>
       </section>
+      <BookingModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        services={services}
+        requireServiceSelection
+        onSubmit={(data) => { console.log('Booking from home:', data); setModalOpen(false); }}
+      />
     </>
   );
 }

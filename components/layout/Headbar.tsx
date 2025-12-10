@@ -1,10 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "../ui/Button";
+import BookingModal from "@/components/ui/BookingModal";
+import { services as SERVICES } from "@/components/data/services";
+import { Toaster } from "sonner";
 
 const navItems = ["Home", "Services", "Talent", "Booking", "Portfolio"];
 
@@ -27,9 +30,11 @@ const routeFor = (item: string) => {
 
 const Headbar: React.FC = () => {
   const pathname = usePathname() || "/";
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <Toaster />
       <div className="max-w-7xl mx-auto py-2">
         <div className="flex items-center justify-between h-14">
           <nav className="flex items-center gap-6">
@@ -49,8 +54,8 @@ const Headbar: React.FC = () => {
                     href={routeFor(item)}
                     className={`transition-colors px-3 py-1 ${
                       (item === "Home" ? pathname === "/" : pathname.startsWith(routeFor(item)))
-                        ? "text-[var(--bg-primary)] font-medium"
-                        : "hover:text-[var(--bg-primary)]"
+                        ? "text-(--bg-primary) font-medium"
+                        : "hover:text-(--bg-primary)"
                     }`}
                     aria-current={(item === "Home" ? pathname === "/" : pathname.startsWith(routeFor(item))) ? "page" : undefined}
                   >
@@ -65,10 +70,18 @@ const Headbar: React.FC = () => {
             <Button
               variant="primary"
               className="rounded-full px-4 py-2 h-10 text-sm shadow-sm"
+              onClick={() => setModalOpen(true)}
             >
               Book a Consultation
             </Button>
           </div>
+          <BookingModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            services={SERVICES}
+            requireServiceSelection
+            onSubmit={(data) => { console.log('Booking from headbar:', data); setModalOpen(false); }}
+          />
         </div>
       </div>
     </header>
