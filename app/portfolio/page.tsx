@@ -69,6 +69,7 @@ const PortfolioPage: React.FC = () => {
               <Button
                 variant={activeCategory === category ? "primary" : "primary-line"}
                 pill
+                className="min-w-[140px]"
                 onClick={() => setActiveCategory(category)}
               >
                 {category}

@@ -72,6 +72,7 @@ export default function Services() {
 							<Button
 								variant={activeCategory === c ? "primary" : "primary-line"}
 								pill
+								className="min-w-[160px]"
 								onClick={() => setActiveCategory(c)}
 							>
 								{c}
