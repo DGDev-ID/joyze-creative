@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import WorkCard from "../components/ui/WorkCard";
@@ -37,15 +38,17 @@ export default function Home() {
                   className="rounded-full px-6 py-3 h-12 text-base"
                   onClick={() => setModalOpen(true)}
                 >
-                  Book a Consultation
+                  Order Now
                 </Button>
 
-                <Button
-                  variant="ghost"
-                  className="rounded-full px-6 py-3 h-12 text-base"
-                >
-                  Explore Services
-                </Button>
+                <Link href="/services">
+                  <Button
+                    variant="ghost"
+                    className="rounded-full px-6 py-3 h-12 text-base"
+                  >
+                    Explore Services
+                  </Button>
+                </Link>
               </div>
             </MotionDiv>
           </div>
@@ -161,12 +164,14 @@ export default function Home() {
               <p className="text-gray-600 mb-6">Let&apos;s discuss how Joyze Creative Agency can help you achieve your social media marketing goals. Contact us for a free consultation today!</p>
 
               <div className="flex justify-center items-center gap-4">
-                <Button variant="primary" className="rounded-full px-6 py-3">
-                  Get in Touch
-                </Button>
+                <Link href="/services">
+                  <Button variant="primary" className="rounded-full px-6 py-3">
+                    Get in Touch
+                  </Button>
+                </Link>
 
-                <Button variant="ghost" className="rounded-full px-6 py-3">
-                  Book a Free Consultation
+                <Button variant="ghost" className="rounded-full px-6 py-3" onClick={() => setModalOpen(true)}>
+                  Order Now
                 </Button>
               </div>
             </div>

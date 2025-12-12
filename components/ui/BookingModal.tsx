@@ -75,6 +75,24 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
 
   const watchedStart = watch("start_date");
   const watchedServiceId = watch("service_id");
+  const watchedServiceType = watch("service_type_id");
+
+  function formatIDR(amount?: number) {
+    if (amount == null) return "-";
+    try {
+      return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(amount);
+    } catch {
+      return `Rp ${amount.toLocaleString()}`;
+    }
+  }
+
+  const selectedService = services.find((s) => s.id === watchedServiceId);
+  let selectedTier: ServiceTier | undefined = undefined;
+  if (selectedService) {
+    const idx = Number(watchedServiceType);
+    if (!Number.isNaN(idx) && idx >= 0 && idx < selectedService.tiers.length) selectedTier = selectedService.tiers[idx];
+    else selectedTier = selectedService.tiers[0];
+  }
 
   // auto-calc end date when start changes
   useEffect(() => {
@@ -147,12 +165,20 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
       onClose={onClose}
       title="Order Service"
         size="md"
-        footer={(
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
-          <Button variant="primary-line" className="w-full sm:w-auto" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" className="w-full sm:w-auto" onClick={handleSubmit(submit)}>Submit Booking</Button>
-        </div>
-      )}
+          footer={(
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div className="text-sm text-gray-700">
+              <div className="text-xs text-gray-500 font-bold">Price</div>
+              <div className="text-md font-semibold text-(--bg-primary)">
+                {selectedTier ? `${formatIDR(selectedTier.price)}${selectedTier.period ? ` ${selectedTier.period}` : ""}` : "-"}
+              </div>
+            </div>
+
+            <div className="w-full sm:w-auto">
+              <Button variant="primary" className="w-full" onClick={handleSubmit(submit)}>Submit Booking</Button>
+            </div>
+          </div>
+        )}
     >
   <form className="space-y-4 text-left min-w-0" onSubmit={handleSubmit(submit)}>
         <p className="text-sm text-gray-500">Fill out the form below to place your service order.</p>
@@ -226,6 +252,8 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
             </Select>
           </div>
         </div>
+
+        {/* Price will be shown next to Submit in the footer */}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input

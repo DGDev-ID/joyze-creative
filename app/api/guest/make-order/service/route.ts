@@ -1,11 +1,9 @@
 import { prisma } from "@/app/lib/prisma";
 import { success, fail } from "@/app/lib/response";
-import { NextRequest } from "next/server";
+// no request param required for this handler
 
 // Index
-export async function GET(
-  req: NextRequest,
-) {
+export async function GET() {
   try {
     const data = await prisma.mService.findMany();
 
