@@ -88,7 +88,7 @@ const Headbar: React.FC = () => {
 							className="rounded-full px-4 py-2 h-10 text-sm shadow-sm"
 							onClick={() => setModalOpen(true)}
 						>
-							Book a Consultation
+							Order Now
 						</Button>
 					</div>
 
