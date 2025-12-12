@@ -7,14 +7,15 @@ import { NextRequest } from "next/server";
 // Show
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mTalents.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Talent tidak ditemukan!");
@@ -29,12 +30,13 @@ export async function GET(
 // Update
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const body = await req.json();
     const parsed = await storeUpdateSchema.safeParse(body);
 
@@ -43,12 +45,12 @@ export async function PUT(
     }
 
     const data = await prisma.mTalents.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
     if (!data) return fail("Talent tidak ditemukan!");
 
     const updatedData = await prisma.mTalents.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         name: parsed.data.name,
         img_url: parsed.data.img_url,
@@ -68,20 +70,21 @@ export async function PUT(
 // Destroy
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mTalents.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Talent tidak ditemukan!");
 
     await prisma.mTalents.delete({
-      where: { id: Number(params.id) }
+      where: { id: Number(id) }
     });
 
     return success(null, "Talent berhasil dihapus!");

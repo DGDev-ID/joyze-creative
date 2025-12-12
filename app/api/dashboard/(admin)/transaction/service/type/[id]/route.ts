@@ -5,10 +5,11 @@ import { NextRequest } from "next/server";
 // Show
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // params sebagai Promise
 ) {
   try {
-    const service_id = Number(params.id);
+    const { id } = await context.params; // ambil id dari Promise
+    const service_id = Number(id);
 
     const data = await prisma.serviceType.findMany({
       where: { service_id }

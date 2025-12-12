@@ -7,14 +7,15 @@ import { NextRequest } from "next/server";
 // Show
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // params sebagai Promise
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mServiceCategory.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Service category tidak ditemukan!");
@@ -29,25 +30,26 @@ export async function GET(
 // Update
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const body = await req.json();
     const parsed = storeUpdateSchema.parse({
-      id: Number(params.id),
+      id: Number(id),
       ...body,
     });
 
     const data = await prisma.mServiceCategory.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
     if (!data) return fail("Service category tidak ditemukan!");
 
     const updatedData = await prisma.mServiceCategory.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: { name: parsed.name },
     });
 
@@ -61,20 +63,21 @@ export async function PUT(
 // Destroy
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mServiceCategory.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Service category tidak ditemukan!");
 
     await prisma.mServiceCategory.delete({
-      where: { id: Number(params.id) }
+      where: { id: Number(id) },
     });
 
     return success(null, "Service category berhasil dihapus!");

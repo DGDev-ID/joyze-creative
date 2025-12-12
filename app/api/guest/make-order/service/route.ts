@@ -5,14 +5,9 @@ import { NextRequest } from "next/server";
 // Index
 export async function GET(
   req: NextRequest,
-  { params }: { params: { service_id: string } }
 ) {
   try {
-    const service_id = Number(params.service_id);
-
-    const data = await prisma.serviceType.findMany({
-      where: { service_id }
-    });
+    const data = await prisma.mService.findMany();
 
     return success(data);
   } catch (e: unknown) {

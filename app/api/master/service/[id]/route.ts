@@ -7,14 +7,15 @@ import { NextRequest } from "next/server";
 // Show
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mService.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       include: {
         serviceCategories: true,
         serviceTypes: true
@@ -33,12 +34,13 @@ export async function GET(
 // Update
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const body = await req.json();
     const parsed = await storeUpdateSchema.safeParseAsync(body);
 
@@ -47,12 +49,12 @@ export async function PUT(
     }
 
     const data = await prisma.mService.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
     if (!data) return fail("Service tidak ditemukan!");
 
     const updatedData = await prisma.mService.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         icon: parsed.data.icon,
         name: parsed.data.name,
@@ -60,7 +62,7 @@ export async function PUT(
         unit: parsed.data.unit,
         status: parsed.data.status,
         serviceCategories: {
-          set: parsed.data.categories.map((id) => ({ id })),
+          set: parsed.data.categories.map((catId) => ({ id: catId })),
         },
       },
     });
@@ -75,20 +77,21 @@ export async function PUT(
 // Destroy
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mService.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Service tidak ditemukan!");
 
     await prisma.mService.delete({
-      where: { id: Number(params.id) }
+      where: { id: Number(id) }
     });
 
     return success(null, "Service berhasil dihapus!");

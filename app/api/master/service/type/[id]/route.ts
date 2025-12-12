@@ -7,14 +7,15 @@ import { NextRequest } from "next/server";
 // Show
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.serviceType.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       include: {
         service: true,
         serviceTypeDescriptions: true
@@ -33,12 +34,13 @@ export async function GET(
 // Update
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const body = await req.json();
     const parsed = await storeUpdateSchema.safeParseAsync(body);
 
@@ -47,12 +49,12 @@ export async function PUT(
     }
 
     const data = await prisma.serviceType.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
     if (!data) return fail("Service type tidak ditemukan!");
 
     const updatedData = await prisma.serviceType.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         service_id: parsed.data.service_id,
         name: parsed.data.name,
@@ -82,20 +84,21 @@ export async function PUT(
 // Destroy
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.serviceType.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Service type tidak ditemukan!");
 
     await prisma.serviceType.delete({
-      where: { id: Number(params.id) }
+      where: { id: Number(id) }
     });
 
     return success(null, "Service type berhasil dihapus!");

@@ -7,14 +7,15 @@ import { NextRequest } from "next/server";
 // Show
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // params sebagai Promise
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mPortfolio.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       include: {
         portfolioCategories: true,
         portfolioImages: true
@@ -33,12 +34,13 @@ export async function GET(
 // Update
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const body = await req.json();
     const parsed = await storeUpdateSchema.safeParseAsync(body);
 
@@ -47,12 +49,12 @@ export async function PUT(
     }
 
     const data = await prisma.mPortfolio.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
     if (!data) return fail("Portfolio tidak ditemukan!");
 
     const updatedData = await prisma.mPortfolio.update({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
       data: {
         name: parsed.data.name,
         description: parsed.data.description,
@@ -63,15 +65,15 @@ export async function PUT(
     await prisma.portfolioImage.deleteMany({ where: { portfolio_id: updatedData.id } });
 
     await prisma.portfolioCategory.createMany({
-      data: parsed.data.categories.map(id => ({
-        portfolio_id: Number(params.id),
-        category_id: id
+      data: parsed.data.categories.map(catId => ({
+        portfolio_id: updatedData.id,
+        category_id: catId
       }))
     });
 
     await prisma.portfolioImage.createMany({
       data: parsed.data.img_urls.map(img_url => ({
-        portfolio_id: Number(params.id),
+        portfolio_id: updatedData.id,
         img_url
       }))
     });
@@ -86,20 +88,21 @@ export async function PUT(
 // Destroy
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const mid = await adminMiddleware(req);
   if (mid) return mid;
 
   try {
+    const { id } = await context.params;
     const data = await prisma.mPortfolio.findUnique({
-      where: { id: Number(params.id) },
+      where: { id: Number(id) },
     });
 
     if (!data) return fail("Portfolio tidak ditemukan!");
 
     await prisma.mPortfolio.delete({
-      where: { id: Number(params.id) }
+      where: { id: Number(id) }
     });
 
     return success(null, "Portfolio berhasil dihapus!");
