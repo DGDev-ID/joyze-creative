@@ -1,6 +1,6 @@
 import { z } from "zod"
-import { MServiceStatus, MServiceUnit } from "@/app/generated/prisma/enums";
 import { prisma } from "@/app/lib/prisma";
+import { MServiceStatus, MServiceUnit } from "@/app/generated/prisma/enums";
 
 export const storeUpdateSchema = z.object({
     icon: z.string().min(1, "Icon service wajib diisi"),
