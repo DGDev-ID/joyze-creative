@@ -76,7 +76,7 @@ export default function Modal({
     sm: "max-w-xl",
     md: "max-w-2xl",
     lg: "max-w-4xl",
-    full: "w-full max-w-5xl mx-4",
+    full: "w-full max-w-5xl",
   }[size];
 
   const node = (
@@ -106,7 +106,7 @@ export default function Modal({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
-            className={`relative z-10 w-full ${maxWidth}`}
+            className={`relative z-10 w-full ${maxWidth} px-4`}
             role="dialog"
             aria-modal="true"
             aria-label={typeof title === "string" ? title : undefined}
@@ -114,9 +114,9 @@ export default function Modal({
             <div
               ref={dialogRef}
               tabIndex={-1}
-              className="bg-white rounded-xl shadow-2xl overflow-hidden ring-1 ring-black/5"
+              className="bg-white rounded-xl shadow-2xl overflow-auto max-h-[85vh] ring-1 ring-black/5"
             >
-              <div className="flex items-center justify-between p-4 border-b border-gray-100">
+              <div className="sticky top-0 z-20 bg-white flex items-center justify-between p-4 border-b border-gray-100">
                 <div className="text-lg font-semibold text-gray-900">{title}</div>
                 <button
                   onClick={onClose}
@@ -127,9 +127,13 @@ export default function Modal({
                 </button>
               </div>
 
-              <div className="p-6 text-gray-700">{children}</div>
+              <div className="p-6 text-gray-700 pb-5 sm:pb-6">{children}</div>
 
-              {footer && <div className="p-4 border-t border-gray-100">{footer}</div>}
+              {footer && (
+                <div className="p-4 border-t border-gray-100 bg-white sticky bottom-0 z-10">
+                  {footer}
+                </div>
+              )}
             </div>
           </motion.div>
         </motion.div>

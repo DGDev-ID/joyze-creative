@@ -146,14 +146,15 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
       open={open}
       onClose={onClose}
       title="Order Service"
-      footer={(
-        <div className="flex justify-end gap-2">
-          <Button variant="primary-line" onClick={onClose}>Cancel</Button>
-          <Button variant="primary" onClick={handleSubmit(submit)}>Submit Booking</Button>
+        size="md"
+        footer={(
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+          <Button variant="primary-line" className="w-full sm:w-auto" onClick={onClose}>Cancel</Button>
+          <Button variant="primary" className="w-full sm:w-auto" onClick={handleSubmit(submit)}>Submit Booking</Button>
         </div>
       )}
     >
-      <form className="space-y-4 text-left" onSubmit={handleSubmit(submit)}>
+  <form className="space-y-4 text-left min-w-0" onSubmit={handleSubmit(submit)}>
         <p className="text-sm text-gray-500">Fill out the form below to place your service order.</p>
 
         <div>
@@ -167,7 +168,7 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
           <Input
             label="Customer Phone"
             type="tel"
@@ -188,7 +189,7 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
           <div>
             <Select
               id="service-select"

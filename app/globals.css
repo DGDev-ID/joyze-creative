@@ -36,6 +36,11 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Prevent horizontal overflow on small screens */
+html, body {
+  overflow-x: hidden;
+}
+
 /* Floating blob animation used for decorative background blobs */
 @keyframes float {
   0% {
