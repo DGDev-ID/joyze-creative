@@ -1,94 +1,79 @@
 import { prisma } from "@/app/lib/prisma";
 import { success, fail } from "@/app/lib/response";
+import { NextRequest, NextResponse } from "next/server";
 
-// Show
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-    try {
-        const order_id = Number(params.id);
-        
-        const data = await prisma.order.findUnique({
-            where: {
-                id: order_id
-            },
-            
-            include: {
-                transaction: {
-                    include: {
-                        serviceType: {
-                            include: {
-                                service: true
-                            }
-                        }
-                    }
-                },
+// GET /api/dashboard/order/[id]
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const order_id = Number(params.id);
 
-                orderLogs: true
+    const data = await prisma.order.findUnique({
+      where: { id: order_id },
+      include: {
+        transaction: {
+          include: {
+            serviceType: {
+              include: { service: true }
             }
-        })
+          }
+        },
+        orderLogs: true
+      }
+    });
 
-        return success(data);
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        return fail(message);
-    }
+    return NextResponse.json(success(data));
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return NextResponse.json(fail(message));
+  }
 }
 
+// PATCH /api/dashboard/order/[id]
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const order_id = Number(params.id);
 
-// Show
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-    try {
-        const order_id = Number(params.id);
-        
-        const data = await prisma.order.findUnique({
-            where: {
-                id: order_id
-            },
-        })
+    const data = await prisma.order.findUnique({ where: { id: order_id } });
+    if (!data) return NextResponse.json(fail("Order tidak ditemukan", 404));
 
-        if(!data) return fail("Order tidak ditemukan", 404);
+    const updated = await prisma.order.update({
+      where: { id: data.id },
+      data: { status: "DONE" }
+    });
 
-        await prisma.order.update({
-            data: {
-                status: "DONE"
-            },
-
-            where: {
-                id: data.id
-            }
-        })
-
-        return success(data);
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        return fail(message);
-    }
+    return NextResponse.json(success(updated));
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return NextResponse.json(fail(message));
+  }
 }
 
-// Store
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-    try {
-        const order_id = Number(params.id);
-        const body = await req.json();
-        const { log } = body;
-        
-        const data = await prisma.order.findUnique({
-            where: {
-                id: order_id
-            },
-        })
+// POST /api/dashboard/order/[id]
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const order_id = Number(params.id);
+    const body = await req.json();
+    const { log } = body;
 
-        if(!data) return fail("Order tidak ditemukan", 404);
+    const data = await prisma.order.findUnique({ where: { id: order_id } });
+    if (!data) return NextResponse.json(fail("Order tidak ditemukan", 404));
 
-        await prisma.orderLog.create({
-            data: {
-                order_id: order_id,
-                log: log
-            }
-        })
+    await prisma.orderLog.create({
+      data: { order_id, log }
+    });
 
-        return success(data);
-    } catch (e: unknown) {
-        const message = e instanceof Error ? e.message : String(e);
-        return fail(message);
-    }
+    return NextResponse.json(success(data));
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return NextResponse.json(fail(message));
+  }
 }
