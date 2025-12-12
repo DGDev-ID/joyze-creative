@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { MServiceUnit, MServiceStatus } from "@/app/generated/prisma/enums"
+import { MServiceStatus, MServiceUnit } from "@/app/generated/prisma/enums";
 import { prisma } from "@/app/lib/prisma";
 
 export const storeUpdateSchema = z.object({
