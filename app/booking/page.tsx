@@ -67,7 +67,7 @@ export default function BookingPage() {
 								<span>{selectedService}</span>
 								<ChevronDown className="w-4 h-4 text-gray-500" />
 							</div>
-							<div className="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg border border-gray-200">
+							<div className="static sm:absolute z-10 w-full mt-1 sm:mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto">
 								{services.map((service) => (
 									<MotionDiv
 										key={service}
