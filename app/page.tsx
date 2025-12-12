@@ -82,7 +82,7 @@ export default function Home() {
           <span className="absolute left-6 -top-4 w-24 h-24 rounded-full bg-(--bg-primary) opacity-12 animate-float z-0 pointer-events-none" aria-hidden />
           <span className="absolute right-20 bottom-6 w-56 h-56 rounded-full bg-(--bg-light) opacity-8 animate-float z-20 pointer-events-none" aria-hidden />
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold\">Our Creative Services</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">Our Creative Services</h2>
             <p className="mt-3 text-gray-400 max-w-2xl mx-auto">We blend strategy, storytelling, and production to create memorable social experiences that move your audience.</p>
           </div>
 
@@ -124,7 +124,7 @@ export default function Home() {
     <span className="absolute left-10 top-10 w-24 h-24 rounded-full bg-(--bg-primary) opacity-8 animate-float z-0 pointer-events-none" aria-hidden />
     <span className="absolute right-6 bottom-10 w-20 h-20 rounded-full bg-(--bg-light) opacity-10 animate-float z-0 pointer-events-none" aria-hidden />
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold\">Our Recent Work</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">Our Recent Work</h2>
             <p className="mt-3 text-gray-500 max-w-2xl mx-auto">A selection of recent projects — social campaigns, photography, and video production.</p>
           </div>
 
