@@ -10,6 +10,9 @@ CREATE TYPE "TransactionStatus" AS ENUM ('PENDING', 'SUCCESS', 'FAILED');
 -- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'DONE');
 
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'CUSTOMER');
+
 -- CreateTable
 CREATE TABLE "m_service_categories" (
     "id" SERIAL NOT NULL,
@@ -71,6 +74,7 @@ CREATE TABLE "service_type_descriptions" (
 -- CreateTable
 CREATE TABLE "m_talents" (
     "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
     "img_url" TEXT NOT NULL,
     "jobdesc" TEXT NOT NULL,
     "detail_jobdesc" TEXT NOT NULL,
@@ -134,7 +138,8 @@ CREATE TABLE "transactions" (
     "cust_phone" TEXT NOT NULL,
     "start_date" TIMESTAMP(3) NOT NULL,
     "end_date" TIMESTAMP(3) NOT NULL,
-    "snap_token" TEXT,
+    "midtrans_order_id" TEXT,
+    "midtrans_redirect_url" TEXT,
     "status" "TransactionStatus" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -174,6 +179,25 @@ CREATE TABLE "order_logs" (
 
     CONSTRAINT "order_logs_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "transactions_midtrans_order_id_key" ON "transactions"("midtrans_order_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
 ALTER TABLE "service_categories" ADD CONSTRAINT "service_categories_service_id_fkey" FOREIGN KEY ("service_id") REFERENCES "m_services"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
