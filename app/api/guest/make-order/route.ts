@@ -45,21 +45,22 @@ export async function POST(req: Request) {
         const redirect_url = await createMidtransTransaction(data)
 
         return success(redirect_url, "Transaksi berhasil dibuat. Silahkan selesaikan pembayaran!")
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
 
 async function createMidtransTransaction(transaction: Transaction ) {
-    let snap = new midtransClient.Snap({
+    const snap = new midtransClient.Snap({
         isProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
         serverKey: String(process.env.MIDTRANS_SERVER_KEY),
         clientKey: String(process.env.MIDTRANS_CLIENT_KEY)
     })
 
-    const orderId = String(randomUUID);
+    const orderId = randomUUID();
 
-    let parameter = {
+    const parameter = {
         "transaction_details": {
             "order_id": orderId,
             "gross_amount": Number(transaction.total_price)

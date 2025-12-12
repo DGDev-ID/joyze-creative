@@ -69,7 +69,7 @@ const Headbar: React.FC = () => {
 										href={routeFor(item)}
 										className={`transition-colors px-3 py-1 rounded-md ${
 											isActive(item)
-												? "text-[var(--bg-primary)] font-medium bg-orange-50"
+												? "text-[var(--bg-primary)] font-medium"
 												: "hover:text-[var(--bg-primary)]"
 										}`}
 										aria-current={isActive(item) ? "page" : undefined}

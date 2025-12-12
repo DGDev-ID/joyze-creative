@@ -29,7 +29,7 @@ export function fail(
 }
 
 export function validationError(
-  errors: any,
+  errors: unknown,
   message: string = "Validation failed"
 ) {
   return NextResponse.json(

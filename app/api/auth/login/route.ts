@@ -39,8 +39,9 @@ export async function POST(req: Request) {
             },
             "Login berhasil"
         );
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e ?? "Unknown error");
+        return fail(msg);
     }
 }
 

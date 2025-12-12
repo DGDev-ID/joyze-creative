@@ -5,7 +5,8 @@ import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { ServiceTier } from "@/components/ui/ServiceCard";
-import { User, Mail, Phone, Calendar, ChevronDown } from "lucide-react";
+import { User, Mail, Phone, Calendar } from "lucide-react";
+import Select from "@/components/ui/Select";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -189,47 +190,39 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="service-select" className="block text-sm font-medium text-gray-700 mb-2">Select Service</label>
-            <div className="relative">
-              <select
-                id="service-select"
-                title="Select Service"
-                className="w-full bg-white border rounded-md transition-shadow duration-150 focus:outline-none border-gray-200 focus:ring-2 focus:ring-(--bg-primary)/30 px-3 py-2 h-11 appearance-none"
-                {...register("service_id")}
-              >
-                {requireServiceSelection && <option value="">-- Select a service --</option>}
-                {services.map((sv) => (
-                  <option key={sv.id} value={sv.id}>{sv.title}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
-            </div>
-            {errors.service_id && <p className="mt-2 text-xs text-(--bg-danger)">{errors.service_id.message}</p>}
+            <Select
+              id="service-select"
+              label="Select Service"
+              title="Select Service"
+              {...register("service_id")}
+              error={errors.service_id?.message}
+            >
+              {requireServiceSelection && <option value="">-- Select a service --</option>}
+              {services.map((sv) => (
+                <option key={sv.id} value={sv.id}>{sv.title}</option>
+              ))}
+            </Select>
           </div>
 
           <div>
-            <label htmlFor="service-type-select" className="block text-sm font-medium text-gray-700 mb-2">Select Service Type</label>
-            <div className="relative">
-              <select
-                id="service-type-select"
-                title="Select Service Type"
-                className="w-full bg-white border rounded-md transition-shadow duration-150 focus:outline-none border-gray-200 focus:ring-2 focus:ring-(--bg-primary)/30 px-3 py-2 h-11 appearance-none"
-                {...register("service_type_id")}
-                disabled={!watchedServiceId}
-              >
-                {watchedServiceId
-                  ? (() => {
-                      const svc = services.find((x) => x.id === watchedServiceId) || services[0];
-                      return svc.tiers.map((t, i) => (
-                        <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
-                      ));
-                    })()
-                  : <option value="">-- Select a service first --</option>
-                }
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
-            </div>
-            {errors.service_type_id && <p className="mt-2 text-xs text-(--bg-danger)">{errors.service_type_id.message}</p>}
+            <Select
+              id="service-type-select"
+              label="Select Service Type"
+              title="Select Service Type"
+              {...register("service_type_id")}
+              disabled={!watchedServiceId}
+              error={errors.service_type_id?.message}
+            >
+              {watchedServiceId
+                ? (() => {
+                    const svc = services.find((x) => x.id === watchedServiceId) || services[0];
+                    return svc.tiers.map((t, i) => (
+                      <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
+                    ));
+                  })()
+                : <option value="">-- Select a service first --</option>
+              }
+            </Select>
           </div>
         </div>
 

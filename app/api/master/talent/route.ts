@@ -25,8 +25,9 @@ export async function GET(req: Request) {
         });
 
         return success(data);
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
 
@@ -52,8 +53,9 @@ export async function POST(req: Request) {
         })
 
         return success(data, "Talent berhasil dibuat")
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
 

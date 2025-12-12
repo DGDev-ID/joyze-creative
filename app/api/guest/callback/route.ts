@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { prisma } from "@/app/lib/prisma";
-import { success, fail, validationError } from "@/app/lib/response";
+import { success, fail } from "@/app/lib/response";
 import { Transaction, TransactionStatus } from "@/app/generated/prisma/client";
 import { NextRequest } from "next/server";
 
@@ -42,9 +42,10 @@ export async function POST(req: NextRequest) {
         const updatedTransaction = await setStatusTransaction(transaction!, resultStatus[1] as TransactionStatus, resultStatus[2])
 
         return success(updatedTransaction, "success");
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Midtrans callback error:", error);
-        return fail(error.message, 500)
+        const message = error instanceof Error ? error.message : String(error);
+        return fail(message, 500);
     }
 }
 

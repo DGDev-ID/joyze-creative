@@ -1,6 +1,6 @@
 import { OrderStatus } from "@/app/generated/prisma/enums";
 import { prisma } from "@/app/lib/prisma";
-import { success, fail, validationError } from "@/app/lib/response";
+import { success, fail } from "@/app/lib/response";
 
 // Index
 export async function GET(req: Request) {
@@ -30,8 +30,9 @@ export async function GET(req: Request) {
         })
 
         return success(data);
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
 
@@ -48,7 +49,8 @@ export async function POST(req: Request) {
         })
 
         return success(data);
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }

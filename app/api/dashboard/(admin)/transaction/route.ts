@@ -1,6 +1,7 @@
 import { TransactionStatus } from "@/app/generated/prisma/enums";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
-import { success, fail, validationError } from "@/app/lib/response";
+import { success, fail } from "@/app/lib/response";
 
 // Index
 export async function GET(req: Request) {
@@ -9,9 +10,9 @@ export async function GET(req: Request) {
         const status = searchParams.get("status") as TransactionStatus | null;
         const serviceTypeId = searchParams.get("service-type-id");
 
-        const whereClause: any = {};
-        if (status) whereClause.status = status;
-        if (serviceTypeId) whereClause.service_type_id = serviceTypeId;
+    const whereClause: Prisma.TransactionWhereInput = {};
+    if (status) whereClause.status = status;
+    if (serviceTypeId) whereClause.service_type_id = Number(serviceTypeId);
 
 
         const data = await prisma.transaction.findMany({
@@ -26,7 +27,8 @@ export async function GET(req: Request) {
         })
 
         return success(data);
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }

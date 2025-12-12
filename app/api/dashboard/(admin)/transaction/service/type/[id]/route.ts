@@ -1,8 +1,8 @@
 import { prisma } from "@/app/lib/prisma";
-import { success, fail, validationError } from "@/app/lib/response";
+import { success, fail } from "@/app/lib/response";
 
 // Show
-export async function GET(req: Request, { params }: any) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
     try {
         const service_id = Number(params.id);
         const data = await prisma.serviceType.findMany({
@@ -11,7 +11,8 @@ export async function GET(req: Request, { params }: any) {
             }
         })
         return success(data);
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }

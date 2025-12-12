@@ -4,7 +4,7 @@ import { success, fail, validationError } from "@/app/lib/response";
 import { adminMiddleware } from "@/app/api/middleware/admin.middleware";
 
 // Show
-export async function GET(req: Request, { params }: any) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
     const mid = await adminMiddleware(req);
     if (mid) return mid;
 
@@ -20,13 +20,14 @@ export async function GET(req: Request, { params }: any) {
         if (!data) return fail("Service tidak ditemukan!")
 
         return success(data);
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
 
 // Update
-export async function PUT(req: Request, { params }: any) {
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
     const mid = await adminMiddleware(req);
     if (mid) return mid;
 
@@ -59,13 +60,14 @@ export async function PUT(req: Request, { params }: any) {
         });
 
         return success(updatedData, "Service category berhasil di update!");
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
 
 // Destroy
-export async function DELETE(req: Request, { params }: any) {
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
     const mid = await adminMiddleware(req);
     if (mid) return mid;
 
@@ -81,7 +83,8 @@ export async function DELETE(req: Request, { params }: any) {
         })
 
         return success(null, "Service berhasil dihapus!");
-    } catch (e: any) {
-        return fail(e.message);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        return fail(message);
     }
 }
