@@ -27,11 +27,12 @@ const PortfolioPage: React.FC = () => {
 
   return (
     <div className="w-full relative">
-  <span className="absolute -right-8 -top-10 w-44 h-44 rounded-full bg-(--bg-primary) opacity-20 blur-2xl transform rotate-6 animate-float" aria-hidden />
-  <span className="absolute -left-6 -bottom-8 w-36 h-36 rounded-full bg-(--bg-light) opacity-25 blur-lg animate-float" aria-hidden />
-      {/* extra decorative blobs */}
-  <span className="absolute left-6 top-6 w-32 h-32 rounded-full bg-(--bg-light) opacity-18 blur-xl animate-float" aria-hidden />
-  <span className="absolute -right-16 bottom-12 w-52 h-52 rounded-full bg-(--bg-primary) opacity-10 blur-3xl animate-float" aria-hidden />
+      {/* Decorative blobs */}
+      <span className="absolute -right-8 -top-10 w-44 h-44 rounded-full bg-[var(--bg-primary)] opacity-20 blur-2xl transform rotate-6 animate-float" aria-hidden />
+      <span className="absolute -left-6 -bottom-8 w-36 h-36 rounded-full bg-[var(--bg-light)] opacity-25 blur-lg animate-float" aria-hidden />
+      <span className="absolute left-6 top-6 w-32 h-32 rounded-full bg-[var(--bg-light)] opacity-18 blur-xl animate-float" aria-hidden />
+      <span className="absolute -right-16 bottom-12 w-52 h-52 rounded-full bg-[var(--bg-primary)] opacity-10 blur-3xl animate-float" aria-hidden />
+
       <section className="text-center py-12 px-4">
         <MotionDiv
           initial={{ opacity: 0, y: -10 }}
@@ -48,13 +49,14 @@ const PortfolioPage: React.FC = () => {
             Explore a curated selection of our best work, showcasing our expertise
             in social media campaigns, branding, video production, and stunning
             photography. Each project tells a story of innovation and client
+
             success.
           </p>
         </MotionDiv>
       </section>
 
       <section className="pb-20 px-4">
-        <div className="flex justify-center flex-wrap gap-4">
+        <div className="flex justify-center flex-wrap gap-3 sm:gap-4 px-4">
           {categories.map((category, idx) => (
             <MotionDiv
               key={category}

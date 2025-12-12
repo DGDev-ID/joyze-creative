@@ -48,11 +48,11 @@ export default function Services() {
 		return (
 			<div className="w-full py-20 relative">
 						<div className="max-w-7xl mx-auto px-4 text-center">
-							<span className="absolute -left-12 -top-10 w-44 h-44 rounded-full bg-(--bg-light) opacity-25 blur-2xl animate-float" aria-hidden />
-							<span className="absolute right-6 -bottom-10 w-36 h-36 rounded-full bg-(--bg-primary) opacity-20 blur-xl transform rotate-6 animate-float" aria-hidden />
+							<span className="absolute -left-12 -top-10 w-44 h-44 rounded-full bg-[var(--bg-light)] opacity-25 blur-2xl animate-float" aria-hidden />
+							<span className="absolute right-6 -bottom-10 w-36 h-36 rounded-full bg-[var(--bg-primary)] opacity-20 blur-xl transform rotate-6 animate-float" aria-hidden />
 							{/* extra decorative blobs */}
-							<span className="absolute -right-6 top-6 w-32 h-32 rounded-full bg-(--bg-primary) opacity-15 blur-xl transform rotate-12 animate-float" aria-hidden />
-							<span className="absolute left-10 -bottom-6 w-24 h-24 rounded-full bg-(--bg-light) opacity-18 blur-lg animate-float" aria-hidden />
+							<span className="absolute -right-6 top-6 w-32 h-32 rounded-full bg-[var(--bg-primary)] opacity-15 blur-xl transform rotate-12 animate-float" aria-hidden />
+							<span className="absolute left-10 -bottom-6 w-24 h-24 rounded-full bg-[var(--bg-light)] opacity-18 blur-lg animate-float" aria-hidden />
 								<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
 									<h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4">
 										Our Creative Services
@@ -66,7 +66,7 @@ export default function Services() {
 									</p>
 								</MotionDiv>
 
-				<div className="flex justify-center flex-wrap gap-4 mt-8">
+				<div className="flex justify-center flex-wrap gap-4 mt-8 px-4">
 					{categories.map((c, idx) => (
 						<MotionDiv key={c} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: idx * 0.04 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
 							<Button
@@ -82,7 +82,7 @@ export default function Services() {
 
 				{/* Service cards */}
 				<div className="mt-12">
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
 						{filteredServices.length > 0 ? filteredServices.map((s, idx) => (
 							<MotionDiv
 								key={s.id}
@@ -103,9 +103,9 @@ export default function Services() {
 									tiers={s.tiers}
 								/>
 							</MotionDiv>
-																)) : (
-																	<div className="text-center col-span-full text-gray-500">No services found for {activeCategory}.</div>
-																)}
+														)) : (
+															<div className="text-center col-span-full text-gray-500">No services found for {activeCategory}.</div>
+														)}
 					</div>
 
 					{/* Booking modal (component) */}
@@ -121,4 +121,3 @@ export default function Services() {
 		</div>
 	);
 }
-
