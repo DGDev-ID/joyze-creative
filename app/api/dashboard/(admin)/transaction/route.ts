@@ -1,5 +1,5 @@
+import { Prisma } from "@/app/generated/prisma/client";
 import { TransactionStatus } from "@/app/generated/prisma/enums";
-import { Prisma } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
 import { success, fail } from "@/app/lib/response";
 
