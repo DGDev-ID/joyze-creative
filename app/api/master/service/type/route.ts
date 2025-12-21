@@ -23,7 +23,8 @@ export async function GET(req: Request) {
                 : undefined,
             orderBy: { name: "asc" },
             include: {
-                service: true
+                service: true,
+                serviceTypeDescriptions: true
             }
         });
 
