@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
+import { Decimal } from "@prisma/client/runtime/client";
 
 export const storeUpdateSchema = z.object({
     service_id: z.number().int().min(1, "Service id wajib diisi"),
     name: z.string().min(1, "Service type name wajib diisi"),
-    price: z.coerce.bigint(),
+    price: z.coerce.number().transform(v => new Decimal(v)),
     descriptions: z.array(
         z.string().min(1, "Minimal isi 1 deskripsi")
     ).min(1, "Minimal isi 1 deskripsi")
