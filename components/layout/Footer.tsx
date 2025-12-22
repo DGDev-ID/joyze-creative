@@ -11,7 +11,7 @@ import Image from "next/image";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="w-full bg-[var(--bg-light)] text-gray-700">
+  <footer className="w-full bg-(--bg-light) text-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-8">
         <div className="grid gap-8 grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
           {/* Column 1: Brand and Social */}
@@ -45,11 +45,11 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold mb-4 text-gray-800">Services</h4>
             <ul className="space-y-3 text-sm text-gray-600">
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Content Creation</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Social Media Mgmt</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Photography</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Videography</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Influence Collab</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Content Creation</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Social Media Mgmt</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Photography</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Videography</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Influence Collab</a></li>
             </ul>
           </div>
 
@@ -57,9 +57,9 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold mb-4 text-gray-800">Company</h4>
             <ul className="space-y-3 text-sm text-gray-600">
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">About Us</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Our Team</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Careers</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">About Us</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Our Team</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Careers</a></li>
             </ul>
           </div>
 
@@ -67,9 +67,9 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="font-semibold mb-4 text-gray-800">Support</h4>
             <ul className="space-y-3 text-sm text-gray-600">
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">FAQ</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Contact Us</a></li>
-              <li><a href="#" className="hover:text-[var(--bg-primary)]">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">FAQ</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Contact Us</a></li>
+              <li><a href="#" className="hover:text-(--bg-primary)">Privacy Policy</a></li>
             </ul>
           </div>
         </div>

@@ -1,18 +1,97 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import WorkCard from "../components/ui/WorkCard";
 import MotionDiv, { MotionImg } from "../components/ui/MotionWrap";
 import { Sparkles } from "lucide-react";
-import { services } from "../components/data/services";
 import { portfolio } from "../components/data/portfolio";
 import BookingModal from "../components/ui/BookingModal";
+import type { ServiceItem } from "../components/ui/BookingModal";
+import Loading from "../components/ui/Loading";
+
+// Lightweight API types and mapping for homepage usage
+type ServiceTypeDescriptionApi = { id: number; service_type_id?: number; description?: string };
+type ServiceTypeApi = { id: number; service_id?: number; name?: string; title?: string; price?: number | string; price_raw?: number | string; price_display?: string; priceText?: string; serviceTypeDescriptions?: ServiceTypeDescriptionApi[] };
+type ServiceApi = { id: number; name?: string; title?: string; description?: string; summary?: string; unit?: string; serviceTypes?: ServiceTypeApi[] };
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [servicesList, setServicesList] = useState<ServiceItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch('/api/guest/service');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const data = (json?.data ?? json) as ServiceApi[];
+        const mapUnit = (u: string | undefined) => {
+          if (!u) return undefined;
+          switch (String(u).toUpperCase()) {
+            case 'MONTH':
+            case 'MONTHS':
+              return '/bulan';
+            case 'DAY':
+              return '/hari';
+            case 'SESSION':
+              return '/sesi';
+            case 'VIDEO':
+              return '/video';
+            default:
+              return `/${String(u).toLowerCase()}`;
+          }
+        };
+
+        const mapped = (data || []).map((s: ServiceApi) => {
+          const tiers = (s.serviceTypes || []).map((st: ServiceTypeApi) => {
+            const rawPrice = st.price ?? st.price_raw ?? st.price_display;
+            let priceNum: number | undefined = undefined;
+            if (rawPrice != null) {
+              const digits = String(rawPrice).replace(/[^0-9.-]+/g, '');
+              const n = Number(digits);
+              if (!Number.isNaN(n)) priceNum = n;
+            }
+            const priceDisplay = priceNum != null
+              ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(priceNum)
+              : (st.price_display ?? st.priceText ?? undefined);
+
+            const features = (st.serviceTypeDescriptions || []).map((d: ServiceTypeDescriptionApi) => d.description).filter(Boolean) as string[];
+
+            return {
+              name: st.name ?? st.title ?? `Tier ${st.id}`,
+              price: priceNum,
+              priceDisplay,
+              period: mapUnit(s.unit),
+              features,
+            };
+          });
+
+          return {
+            id: String(s.id),
+            title: s.name ?? s.title ?? `Service ${s.id}`,
+            description: s.description ?? s.summary ?? '',
+            icon: null,
+            tiers,
+          } as ServiceItem;
+        });
+        if (!cancelled) setServicesList(mapped);
+      } catch (err: unknown) {
+        if (!cancelled) setError((err as Error)?.message ?? String(err));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <>
       <div className="max-w-7xl mx-auto px-6 py-40">
@@ -90,30 +169,36 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-            {services.slice(0, 6).map((s, idx) => (
-              <MotionDiv
-                key={s.id}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ delay: 0.05 + idx * 0.06 }}
-              >
-                <Card className="p-6 group relative z-10">
-                  <div className="flex items-start gap-4">
-                    <div className="shrink-0">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center bg-linear-to-tr from-(--bg-primary) to-(--bg-light) text-white shadow-md">
-                        {s.icon}
+            {loading ? (
+              <div className="col-span-full flex justify-center py-8"><Loading /></div>
+            ) : error ? (
+              <div className="col-span-full text-center text-red-500">Error loading services: {error}</div>
+            ) : (
+              servicesList.slice(0, 6).map((s, idx) => (
+                <MotionDiv
+                  key={s.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ delay: 0.05 + idx * 0.06 }}
+                >
+                  <Card className="p-6 group relative z-10">
+                    <div className="flex items-start gap-4">
+                      <div className="shrink-0">
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-linear-to-tr from-(--bg-primary) to-(--bg-light) text-white shadow-md">
+                          <Sparkles className="text-white" />
+                        </div>
+                      </div>
+
+                      <div className="mt-1">
+                        <h3 className="font-semibold text-(--bg-primary)">{s.title}</h3>
+                        <p className="text-sm text-gray-400 mt-2">{s.description}</p>
                       </div>
                     </div>
-
-                    <div className="mt-1">
-                      <h3 className="font-semibold text-(--bg-primary)">{s.title}</h3>
-                      <p className="text-sm text-gray-400 mt-2">{s.description}</p>
-                    </div>
-                  </div>
-                </Card>
-              </MotionDiv>
-            ))}
+                  </Card>
+                </MotionDiv>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -182,7 +267,7 @@ export default function Home() {
       <BookingModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        services={services}
+        services={servicesList}
         requireServiceSelection
         onSubmit={(data) => { console.log('Booking from home:', data); setModalOpen(false); }}
       />

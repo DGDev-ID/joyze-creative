@@ -20,7 +20,7 @@ const WorkCard: React.FC<WorkCardProps> = ({ imageSrc, title, category }) => {
         <div className="absolute left-4 right-4 bottom-4 pointer-events-none">
           <h3 className="text-lg font-semibold text-white drop-shadow-sm leading-tight">{title}</h3>
           {category && (
-            <span className="inline-block mt-2 text-xs bg-white/90 text-gray-800 px-3 py-1 rounded-full transition-colors duration-200 pointer-events-auto group-hover:bg-[var(--bg-primary)] group-hover:text-white">
+            <span className="inline-block mt-2 text-xs bg-white/90 text-gray-800 px-3 py-1 rounded-full transition-colors duration-200 pointer-events-auto group-hover:bg-(--bg-primary) group-hover:text-white">
               {category}
             </span>
           )}

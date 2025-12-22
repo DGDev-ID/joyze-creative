@@ -1,27 +1,26 @@
 export const talents = [
   {
     id: 1,
-    name: "Elara Vance",
-    role: "Social Media Strategist",
-    bio: "Elara crafts data-driven social strategies that elevate brands and engage communities.",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=60",
+    name: "Yunanda Ayu Avriliana",
+    role: "Chief Executive Officer",
+    bio: "Yunanda leads company vision and operations, aligning teams and driving growth through strategic partnerships and data-informed decisions.",
+    avatar: "/talents/yunanda.jpeg",
   },
   {
     id: 2,
-    name: "Liam Foster",
-    role: "Lead Photographer",
-    bio: "Liam captures striking visuals with a cinematic eye for storytelling and product detail.",
+    name: "Afida Eka Yuliana",
+    role: "Chief Financial Officer",
+    bio: "Afida oversees financial strategy, budgeting, and investor relations, ensuring fiscal health, transparency, and operational efficiency.",
     avatar:
-      "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=200&q=60",
+      "/talents/afida.jpeg",
   },
   {
     id: 3,
-    name: "Chloe Lee",
-    role: "Content Creator & Copywriter",
-    bio: "Chloe writes compelling narratives that resonate with audiences and drive engagement.",
+    name: "Radeva Nirwana",
+    role: "Chief Marketing Officer",
+    bio: "Radeva develops and executes integrated marketing and brand strategies to drive awareness, demand, and customer engagement.",
     avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=60",
+      "/talents/radeva.jpeg",
   },
   {
     id: 4,

@@ -28,11 +28,11 @@ export default function BookingPage() {
 
 	return (
 		<div className="w-full py-12 text-gray-900 relative">
-			<span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-[var(--bg-primary)] opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
-			<span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-[var(--bg-light)] opacity-30 blur-lg animate-float" aria-hidden />
+			<span className="absolute -right-10 -top-6 w-50 h-50 rounded-full bg-(--bg-primary) opacity-25 blur-xl transform rotate-12 animate-float" aria-hidden />
+			<span className="absolute -left-6 -bottom-6 w-38 h-38 rounded-full bg-(--bg-light) opacity-30 blur-lg animate-float" aria-hidden />
 			{/* extra decorative blobs */}
-			<span className="absolute left-10 top-20 w-28 h-28 rounded-full bg-[var(--bg-light)] opacity-20 blur-xl animate-float" aria-hidden />
-			<span className="absolute -right-20 bottom-20 w-56 h-56 rounded-full bg-[var(--bg-primary)] opacity-12 blur-3xl animate-float" aria-hidden />
+			<span className="absolute left-10 top-20 w-28 h-28 rounded-full bg-(--bg-light) opacity-20 blur-xl animate-float" aria-hidden />
+			<span className="absolute -right-20 bottom-20 w-56 h-56 rounded-full bg-(--bg-primary) opacity-12 blur-3xl animate-float" aria-hidden />
 			<div className="max-w-7xl mx-auto px-4 text-center">
 				<MotionDiv initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
 					<h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
@@ -55,7 +55,7 @@ export default function BookingPage() {
 					<div className="bg-white p-6 rounded-lg shadow-md ring-1 ring-gray-50 h-full">
 						<div className="flex items-center justify-between gap-3 mb-3">
 							<h2 className="text-lg font-semibold">1. Select Your Service</h2>
-							<div className="w-10 h-10 rounded-md flex items-center justify-center bg-[var(--bg-primary)]/10 text-[var(--bg-primary)]">
+							<div className="w-10 h-10 rounded-md flex items-center justify-center bg-(--bg-primary)/10 text-(--bg-primary)">
 								<Calendar className="w-5 h-5" />
 							</div>
 						</div>
@@ -73,7 +73,7 @@ export default function BookingPage() {
 										key={service}
 										className={`p-3 cursor-pointer hover:bg-gray-100 ${
 											selectedService === service
-												? "bg-[var(--bg-light)] text-[var(--bg-primary)]"
+												? "bg-(--bg-light) text-(--bg-primary)"
 												: ""
 										}`}
 										whileHover={{ scale: 1.02 }}
@@ -93,7 +93,7 @@ export default function BookingPage() {
 					<div className="bg-white p-6 rounded-lg shadow-md ring-1 ring-gray-50 h-full">
 						<div className="flex items-center justify-between gap-3 mb-3">
 							<h2 className="text-lg font-semibold">2. Schedule Your Session</h2>
-							<div className="w-10 h-10 rounded-md flex items-center justify-center bg-[var(--bg-primary)]/10 text-[var(--bg-primary)]">
+							<div className="w-10 h-10 rounded-md flex items-center justify-center bg-(--bg-primary)/10 text-(--bg-primary)">
 								<Clock className="w-5 h-5" />
 							</div>
 						</div>
@@ -115,7 +115,7 @@ export default function BookingPage() {
 										key={day}
 										className={`p-1 rounded-full cursor-pointer text-sm flex items-center justify-center ${
 											[9, 10, 11, 12, 13].includes(day)
-												? "bg-[var(--bg-primary)]/10 text-[var(--bg-primary)]"
+												? "bg-(--bg-primary)/10 text-(--bg-primary)"
 												: "hover:bg-gray-200"
 										}`}
 										whileHover={{ scale: 1.06 }}
@@ -135,7 +135,7 @@ export default function BookingPage() {
 					<div className="bg-white p-6 rounded-lg shadow-md ring-1 ring-gray-50 h-full">
 						<div className="flex items-center justify-between gap-3 mb-3">
 							<h2 className="text-lg font-semibold">3. Review & Confirm</h2>
-							<div className="w-10 h-10 rounded-md flex items-center justify-center bg-[var(--bg-primary)]/10 text-[var(--bg-primary)]">
+							<div className="w-10 h-10 rounded-md flex items-center justify-center bg-(--bg-primary)/10 text-(--bg-primary)">
 								<CheckCircle className="w-5 h-5" />
 							</div>
 						</div>

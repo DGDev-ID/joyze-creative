@@ -170,7 +170,9 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
             <div className="text-sm text-gray-700">
               <div className="text-xs text-gray-500 font-bold">Price</div>
               <div className="text-md font-semibold text-(--bg-primary)">
-                {selectedTier ? `${formatIDR(selectedTier.price)}${selectedTier.period ? ` ${selectedTier.period}` : ""}` : "-"}
+                {selectedTier
+                  ? `${selectedTier.price != null ? formatIDR(selectedTier.price) : (selectedTier.priceDisplay ?? "-")}${selectedTier.period ? ` ${selectedTier.period}` : ""}`
+                  : "-"}
               </div>
             </div>
 

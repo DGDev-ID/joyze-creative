@@ -45,19 +45,19 @@ const Button: React.FC<ButtonProps> = ({
   const variantStyles: Record<string, string> = {
     // Uses CSS variables defined in app/globals.css (e.g. --bg-primary, --bg-secondary, --bg-danger)
     primary:
-      "bg-[var(--bg-primary)] text-white hover:opacity-90",
+      "bg-(--bg-primary) text-white hover:opacity-90",
     "primary-light":
-      "bg-[var(--bg-light)] text-[color:var(--bg-primary)] hover:opacity-90",
+      "bg-(--bg-light) text-(--bg-primary) hover:opacity-90",
     "primary-line":
-      "bg-white text-[color:var(--bg-primary)] border border-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:text-white",
+      "bg-white text-(--bg-primary) border border-(--bg-primary) hover:bg-(--bg-primary) hover:text-white",
     secondary:
-      "bg-[var(--bg-secondary)] text-[color:var(--foreground)] hover:opacity-90",
+      "bg-(--bg-secondary) text-(--foreground) hover:opacity-90",
     ghost:
-      "bg-transparent text-[color:var(--bg-primary)] border border-[var(--bg-primary)] hover:bg-[var(--bg-primary)] hover:text-white",
+      "bg-transparent text-(--bg-primary) border border-(--bg-primary) hover:bg-(--bg-primary) hover:text-white",
     danger:
-      "bg-[var(--bg-danger)] text-white hover:opacity-90",
+      "bg-(--bg-danger) text-white hover:opacity-90",
     "danger-line":
-      "bg-white text-[var(--bg-danger)] border border-[var(--bg-danger)] hover:bg-[var(--bg-danger)] hover:text-white",
+      "bg-white text-(--bg-danger) border border-(--bg-danger) hover:bg-(--bg-danger) hover:text-white",
   };
 
   const appliedVariant = variantStyles[variant] || variantStyles.primary;
@@ -65,7 +65,7 @@ const Button: React.FC<ButtonProps> = ({
 
   // spinner color: when button background is white (line variants) or ghost, spinner should use primary color
   const spinnerBorderClass = variant === "primary-line" || variant === "danger-line" || variant === "ghost"
-    ? "border-[var(--bg-primary)] border-t-transparent"
+    ? "border-(--bg-primary) border-t-transparent"
     : "border-white border-t-transparent";
 
   const classes = cn(
