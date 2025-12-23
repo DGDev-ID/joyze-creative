@@ -9,8 +9,6 @@ import { randomUUID } from "crypto";
 
 // Store
 export async function POST(req: Request) {
-    const mid = await adminMiddleware(req);
-    if (mid) return mid;
 
     try {
         const body = await req.json();

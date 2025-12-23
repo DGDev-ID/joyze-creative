@@ -61,9 +61,11 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
   const servicesUsed = fetchedServices ?? services;
 
   // per-service types fetched when user selects a service
-  const [serviceTypesList, setServiceTypesList] = useState<ServiceTier[] | null>(null);
+  const [serviceTypesList, setServiceTypesList] = useState<(ServiceTier & { id?: number })[] | null>(null);
   const [loadingServiceTypes, setLoadingServiceTypes] = useState(false);
   const [serviceTypesError, setServiceTypesError] = useState<string | null>(null);
+  // submission state
+  const [submitting, setSubmitting] = useState(false);
 
   // initialize form with empty defaults; we'll reset when servicesUsed or open change
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<FormValues>({
@@ -130,6 +132,7 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
 
             return {
               name: st.name ?? st.title ?? `Tier ${st.id}`,
+              id: st.id,
               price: priceNum,
               period: mapUnit(s.unit),
               features,
@@ -164,14 +167,14 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
         cust_email: initial.cust_email ?? "",
         cust_phone: initial.cust_phone ?? undefined,
         service_id: (requireServiceSelection ? (initial.service_id ?? "") : (initial.service_id ?? defaultService)) as string,
-        service_type_id: (initial.service_type_id ?? (requireServiceSelection ? "" : "0")) as string,
+        service_type_id: (initial.service_type_id ?? (requireServiceSelection ? "" : (servicesUsed[0]?.tiers && servicesUsed[0].tiers.length > 0 ? String(((servicesUsed[0].tiers[0] as unknown) as { id?: number }).id ?? "0") : "0"))) as string,
         start_date: initial.start_date ?? undefined,
         end_date: initial.end_date ?? undefined,
       };
       reset(defaultValues);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, /* include servicesUsed and initial implicitly by reset call */ fetchedServices]);
+    // include servicesUsed/fetchedServices so defaults pick up mapped ids
+  }, [open, fetchedServices]);
 
   const watchedStart = watch("start_date");
   const watchedServiceId = watch("service_id");
@@ -190,9 +193,16 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
   let selectedTier: ServiceTier | undefined = undefined;
   if (selectedService) {
     const tiersSource = (serviceTypesList && watchedServiceId) ? serviceTypesList : selectedService.tiers;
-    const idx = Number(watchedServiceType);
-    if (!Number.isNaN(idx) && idx >= 0 && idx < tiersSource.length) selectedTier = tiersSource[idx];
-    else selectedTier = tiersSource[0];
+    // if we have an id-based list (serviceTypesList) then watchedServiceType holds the real id
+    if (serviceTypesList && watchedServiceType) {
+      const idNum = Number(watchedServiceType);
+      selectedTier = tiersSource.find((t) => Number(((t as ServiceTier & { id?: number }).id) ?? NaN) === idNum) as ServiceTier | undefined;
+      if (!selectedTier) selectedTier = tiersSource[0];
+    } else {
+      const idx = Number(watchedServiceType);
+      if (!Number.isNaN(idx) && idx >= 0 && idx < tiersSource.length) selectedTier = tiersSource[idx];
+      else selectedTier = tiersSource[0];
+    }
   }
 
   // auto-calc end date when start changes
@@ -210,15 +220,21 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchedStart]);
 
-  // when service changes, reset service_type to 0 (or empty)
+  // when service changes, reset service_type to first tier id (if available) or empty
   useEffect(() => {
     if (watchedServiceId) {
-      setValue("service_type_id", "0");
+      const svc = servicesUsed.find((x) => x.id === watchedServiceId);
+      if (serviceTypesList && serviceTypesList.length > 0) {
+        setValue("service_type_id", String((serviceTypesList[0] as { id?: number }).id ?? "0"));
+      } else if (svc && svc.tiers && svc.tiers.length > 0) {
+        setValue("service_type_id", String(((svc.tiers[0] as unknown) as { id?: number }).id ?? "0"));
+      } else {
+        setValue("service_type_id", "");
+      }
     } else {
       setValue("service_type_id", "");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchedServiceId]);
+  }, [watchedServiceId, serviceTypesList, servicesUsed]);
 
   // fetch service types for the selected service (when user picks a service)
   useEffect(() => {
@@ -255,11 +271,12 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
           const features = (st.serviceTypeDescriptions || []).map((d: ServiceTypeDescriptionApi) => d.description).filter(Boolean) as string[];
 
           return {
+            id: st.id,
             name: st.name ?? st.title ?? `Tier ${st.id}`,
             price: priceNum,
             period: undefined, // unit is unknown here (service-level), leave undefined
             features,
-          } as ServiceTier;
+          } as ServiceTier & { id: number };
         });
 
         if (mounted) setServiceTypesList(mapped);
@@ -283,33 +300,66 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
       start_date: data.start_date ?? "",
       end_date: data.end_date ?? "",
     };
-
-    const simulateBookingApi = async () => {
-      // simulate latency
-      await new Promise((r) => setTimeout(r, 700));
-      // static successful contract response
-      return {
-        status: "success",
-        message: "Transaksi berhasil dibuat, silahkan selesaikan pembayaran anda",
-        data: { payment_url: "" },
-      } as const;
-    };
-
     (async () => {
+      setSubmitting(true);
       try {
-  const res = await simulateBookingApi();
-        if (res.status === "success") {
-          toast.success(res.message);
+        // API expects numeric IDs for service_id and service_type_id
+        const apiBody: Record<string, unknown> = {
+          ...normalized,
+          service_id: Number(normalized.service_id),
+          service_type_id: Number(normalized.service_type_id),
+        };
+
+        const res = await fetch('/api/guest/make-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(apiBody),
+        });
+
+        let json: Record<string, unknown> | null = null;
+        try { json = await res.json(); } catch { /* ignore parse errors */ }
+
+        if (!res.ok) {
+          const msg = json && typeof json['message'] === 'string' ? (json['message'] as string) : `HTTP ${res.status}`;
+          throw new Error(msg);
+        }
+
+        // Prefer a message from the API, otherwise a generic success
+        const successMessage = json && typeof json['message'] === 'string' ? (json['message'] as string) : 'Order created successfully';
+
+        // check for a redirect/payment URL in the response
+        let redirectUrl: string | null = null;
+        if (json) {
+          const d = json['data'] as unknown;
+          if (typeof d === 'string') redirectUrl = d;
+          else if (d && typeof (d as Record<string, unknown>)['payment_url'] === 'string') redirectUrl = String((d as Record<string, unknown>)['payment_url']);
+          else if (d && typeof (d as Record<string, unknown>)['url'] === 'string') redirectUrl = String((d as Record<string, unknown>)['url']);
+        }
+
+        if (redirectUrl) {
+          // show toast informing user about redirect and countdown
+          toast.success(`${successMessage} Redirecting to payment in 5 seconds...`);
           if (onSubmit) onSubmit(normalized);
-          else console.log("Booking submitted:", normalized);
+          else console.log('Booking submitted:', normalized);
           onClose();
+
+          // open payment page in a new tab after 5s
+          setTimeout(() => {
+            // try open in new tab; if blocked, navigate current window
+            const opened = window.open(redirectUrl as string, '_blank', 'noopener');
+            if (!opened) window.location.href = redirectUrl as string;
+          }, 5000);
         } else {
-          // error path: show message from contract
-          toast.error(res.message ?? "Unexpected error");
+          toast.success(successMessage);
+          if (onSubmit) onSubmit(normalized);
+          else console.log('Booking submitted:', normalized);
+          onClose();
         }
       } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err ?? "Network error");
+        const msg = err instanceof Error ? err.message : String(err ?? 'Network error');
         toast.error(msg);
+      } finally {
+        setSubmitting(false);
       }
     })();
   };
@@ -331,7 +381,22 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
             </div>
 
             <div className="w-full sm:w-auto">
-          <Button variant="primary" className="w-full" onClick={handleSubmit(submit)} disabled={loadingServices}>Submit Booking</Button>
+          <Button
+            variant="primary"
+            className="w-full"
+            onClick={handleSubmit(submit)}
+            disabled={loadingServices || submitting}
+            aria-busy={submitting}
+          >
+            {submitting ? (
+              <>
+                <span className="inline-block w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                Submitting...
+              </>
+            ) : (
+              'Submit Booking'
+            )}
+          </Button>
             </div>
           </div>
         )}
@@ -405,12 +470,12 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
                 <option value="">Loading service types...</option>
               ) : serviceTypesList ? (
                 serviceTypesList.map((t, i) => (
-                  <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
+                  <option key={String(((t as { id?: number }).id) ?? i)} value={String(((t as { id?: number }).id) ?? i)}>{t.name}{t.period ? ` - ${t.period}` : ''}</option>
                 ))
               ) : watchedServiceId ? (() => {
                     const svc = servicesUsed.find((x) => x.id === watchedServiceId) || servicesUsed[0];
                     return svc.tiers.map((t, i) => (
-                      <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
+                      <option key={String((((t as unknown) as { id?: number }).id) ?? i)} value={String((((t as unknown) as { id?: number }).id) ?? i)}>{t.name}{t.period ? ` - ${t.period}` : ''}</option>
                     ));
                   })() : (
                     <option value="">-- Select a service first --</option>
