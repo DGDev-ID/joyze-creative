@@ -141,7 +141,7 @@ const Headbar: React.FC = () => {
 									setMobileMenuOpen(false);
 								}}
 							>
-								Book a Consultation
+								Order Now
 							</Button>
 						</div>
 					</div>

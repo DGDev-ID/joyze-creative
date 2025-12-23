@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@/components/ui/Modal";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
@@ -11,6 +11,11 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+
+// API lightweight types for mapping
+type ServiceTypeDescriptionApi = { id: number; service_type_id?: number; description?: string };
+type ServiceTypeApi = { id: number; service_id?: number; name?: string; title?: string; price?: number | string; price_raw?: number | string; price_display?: string; priceText?: string; serviceTypeDescriptions?: ServiceTypeDescriptionApi[] };
+type ServiceApi = { id: number; name?: string; title?: string; description?: string; summary?: string; unit?: string; serviceTypes?: ServiceTypeApi[] };
 
 export type ServiceItem = { id: string; title: string; description?: string; tiers: ServiceTier[] };
 
@@ -47,31 +52,126 @@ interface Props {
 }
 
 export default function BookingModal({ open, onClose, services, initial = {}, onSubmit, requireServiceSelection = false }: Props) {
-  const defaultService = services.length > 0 ? services[0].id : "";
+  // local fetched services when modal opens (overrides `services` prop while present)
+  const [fetchedServices, setFetchedServices] = useState<ServiceItem[] | null>(null);
+  const [loadingServices, setLoadingServices] = useState(false);
+  const [servicesError, setServicesError] = useState<string | null>(null);
 
-  const defaultValues: FormValues = {
-    cust_name: initial.cust_name ?? "",
-    cust_email: initial.cust_email ?? "",
-    cust_phone: initial.cust_phone ?? undefined,
-    service_id: (requireServiceSelection ? (initial.service_id ?? "") : (initial.service_id ?? defaultService)) as string,
-    service_type_id: (initial.service_type_id ?? (requireServiceSelection ? "" : "0")) as string,
-    start_date: initial.start_date ?? undefined,
-    end_date: initial.end_date ?? undefined,
-  };
+  // use fetchedServices when available, otherwise fall back to prop
+  const servicesUsed = fetchedServices ?? services;
 
+  // per-service types fetched when user selects a service
+  const [serviceTypesList, setServiceTypesList] = useState<ServiceTier[] | null>(null);
+  const [loadingServiceTypes, setLoadingServiceTypes] = useState(false);
+  const [serviceTypesError, setServiceTypesError] = useState<string | null>(null);
+
+  // initialize form with empty defaults; we'll reset when servicesUsed or open change
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(bookingSchema),
-    defaultValues,
+    defaultValues: {
+      cust_name: initial.cust_name ?? "",
+      cust_email: initial.cust_email ?? "",
+      cust_phone: initial.cust_phone ?? undefined,
+      service_id: "",
+      service_type_id: "",
+      start_date: initial.start_date ?? undefined,
+      end_date: initial.end_date ?? undefined,
+    },
     mode: "onTouched",
   });
 
-  // reset when modal opens or initial/services change
+  // fetch services for make-order when modal opens
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      if (!open) return;
+      setLoadingServices(true);
+      setServicesError(null);
+      try {
+        const res = await fetch('/api/guest/make-order/service');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const data = (json?.data ?? json) as ServiceApi[];
+        const mapUnit = (u: string | undefined) => {
+          if (!u) return undefined;
+          switch (String(u).toUpperCase()) {
+            case 'MONTH':
+            case 'MONTHS':
+              return '/bulan';
+            case 'DAY':
+              return '/hari';
+            case 'SESSION':
+              return '/sesi';
+            case 'VIDEO':
+              return '/video';
+            default:
+              return `/${String(u).toLowerCase()}`;
+          }
+        };
+
+        const parseFixedPrice = (raw: unknown): number | undefined => {
+          if (raw == null) return undefined;
+          if (typeof raw === 'number') return Number.isFinite(raw) ? Math.round(raw) : undefined;
+          const str = String(raw).trim();
+          // reject ranges or textual prices containing hyphen or letters like 'to', 's/d'
+          if (/[-–]/.test(str)) return undefined;
+          if (/[a-zA-Z]/.test(str.replace(/Rp|IDR|\$|€|,|\.|\s/g, ''))) return undefined;
+          const digits = str.replace(/[^0-9]+/g, '');
+          if (!digits) return undefined;
+          const n = Number(digits);
+          return Number.isNaN(n) ? undefined : n;
+        };
+
+        const mapped = (data || []).map((s: ServiceApi) => {
+          const tiers = (s.serviceTypes || []).map((st: ServiceTypeApi) => {
+            const rawPrice = st.price ?? st.price_raw ?? st.price_display;
+            const priceNum = parseFixedPrice(rawPrice);
+            const features = (st.serviceTypeDescriptions || []).map((d: ServiceTypeDescriptionApi) => d.description).filter(Boolean) as string[];
+
+            return {
+              name: st.name ?? st.title ?? `Tier ${st.id}`,
+              price: priceNum,
+              period: mapUnit(s.unit),
+              features,
+            } as ServiceTier;
+          });
+
+          return {
+            id: String(s.id),
+            title: s.name ?? s.title ?? `Service ${s.id}`,
+            description: s.description ?? s.summary ?? '',
+            tiers,
+          } as ServiceItem;
+        });
+
+        if (mounted) setFetchedServices(mapped);
+      } catch (err: unknown) {
+        if (mounted) setServicesError((err as Error)?.message ?? String(err));
+      } finally {
+        if (mounted) setLoadingServices(false);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [open]);
+
+  // reset when modal opens or servicesUsed change
   useEffect(() => {
     if (open) {
+      const defaultService = servicesUsed.length > 0 ? servicesUsed[0].id : "";
+      const defaultValues: FormValues = {
+        cust_name: initial.cust_name ?? "",
+        cust_email: initial.cust_email ?? "",
+        cust_phone: initial.cust_phone ?? undefined,
+        service_id: (requireServiceSelection ? (initial.service_id ?? "") : (initial.service_id ?? defaultService)) as string,
+        service_type_id: (initial.service_type_id ?? (requireServiceSelection ? "" : "0")) as string,
+        start_date: initial.start_date ?? undefined,
+        end_date: initial.end_date ?? undefined,
+      };
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, services]);
+  }, [open, /* include servicesUsed and initial implicitly by reset call */ fetchedServices]);
 
   const watchedStart = watch("start_date");
   const watchedServiceId = watch("service_id");
@@ -86,12 +186,13 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
     }
   }
 
-  const selectedService = services.find((s) => s.id === watchedServiceId);
+  const selectedService = servicesUsed.find((s) => s.id === watchedServiceId);
   let selectedTier: ServiceTier | undefined = undefined;
   if (selectedService) {
+    const tiersSource = (serviceTypesList && watchedServiceId) ? serviceTypesList : selectedService.tiers;
     const idx = Number(watchedServiceType);
-    if (!Number.isNaN(idx) && idx >= 0 && idx < selectedService.tiers.length) selectedTier = selectedService.tiers[idx];
-    else selectedTier = selectedService.tiers[0];
+    if (!Number.isNaN(idx) && idx >= 0 && idx < tiersSource.length) selectedTier = tiersSource[idx];
+    else selectedTier = tiersSource[0];
   }
 
   // auto-calc end date when start changes
@@ -117,6 +218,59 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
       setValue("service_type_id", "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchedServiceId]);
+
+  // fetch service types for the selected service (when user picks a service)
+  useEffect(() => {
+    let mounted = true;
+    const loadTypes = async () => {
+      if (!watchedServiceId) {
+        setServiceTypesList(null);
+        setServiceTypesError(null);
+        setLoadingServiceTypes(false);
+        return;
+      }
+      setLoadingServiceTypes(true);
+      setServiceTypesError(null);
+      try {
+        const res = await fetch(`/api/guest/make-order/service/type/${watchedServiceId}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const data = (json?.data ?? json) as ServiceTypeApi[];
+        const parseFixedPrice = (raw: unknown): number | undefined => {
+          if (raw == null) return undefined;
+          if (typeof raw === 'number') return Number.isFinite(raw) ? Math.round(raw) : undefined;
+          const str = String(raw).trim();
+          if (/[-–]/.test(str)) return undefined;
+          if (/[a-zA-Z]/.test(str.replace(/Rp|IDR|\$|€|,|\.|\s/g, ''))) return undefined;
+          const digits = str.replace(/[^0-9]+/g, '');
+          if (!digits) return undefined;
+          const n = Number(digits);
+          return Number.isNaN(n) ? undefined : n;
+        };
+
+        const mapped = (data || []).map((st: ServiceTypeApi) => {
+          const rawPrice = st.price ?? st.price_raw ?? st.price_display;
+          const priceNum = parseFixedPrice(rawPrice);
+          const features = (st.serviceTypeDescriptions || []).map((d: ServiceTypeDescriptionApi) => d.description).filter(Boolean) as string[];
+
+          return {
+            name: st.name ?? st.title ?? `Tier ${st.id}`,
+            price: priceNum,
+            period: undefined, // unit is unknown here (service-level), leave undefined
+            features,
+          } as ServiceTier;
+        });
+
+        if (mounted) setServiceTypesList(mapped);
+      } catch (err: unknown) {
+        if (mounted) setServiceTypesError((err as Error)?.message ?? String(err));
+      } finally {
+        if (mounted) setLoadingServiceTypes(false);
+      }
+    };
+    loadTypes();
+    return () => { mounted = false; };
   }, [watchedServiceId]);
 
   const submit = (data: FormValues) => {
@@ -177,7 +331,7 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
             </div>
 
             <div className="w-full sm:w-auto">
-              <Button variant="primary" className="w-full" onClick={handleSubmit(submit)}>Submit Booking</Button>
+          <Button variant="primary" className="w-full" onClick={handleSubmit(submit)} disabled={loadingServices}>Submit Booking</Button>
             </div>
           </div>
         )}
@@ -225,11 +379,16 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
               title="Select Service"
               {...register("service_id")}
               error={errors.service_id?.message}
+              disabled={loadingServices}
             >
               {requireServiceSelection && <option value="">-- Select a service --</option>}
-              {services.map((sv) => (
-                <option key={sv.id} value={sv.id}>{sv.title}</option>
-              ))}
+              {loadingServices ? (
+                <option value="">Loading services...</option>
+              ) : (
+                servicesUsed.map((sv) => (
+                  <option key={sv.id} value={sv.id}>{sv.title}</option>
+                ))
+              )}
             </Select>
           </div>
 
@@ -239,21 +398,29 @@ export default function BookingModal({ open, onClose, services, initial = {}, on
               label="Select Service Type"
               title="Select Service Type"
               {...register("service_type_id")}
-              disabled={!watchedServiceId}
+              disabled={!watchedServiceId || loadingServiceTypes}
               error={errors.service_type_id?.message}
             >
-              {watchedServiceId
-                ? (() => {
-                    const svc = services.find((x) => x.id === watchedServiceId) || services[0];
+              {loadingServiceTypes ? (
+                <option value="">Loading service types...</option>
+              ) : serviceTypesList ? (
+                serviceTypesList.map((t, i) => (
+                  <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
+                ))
+              ) : watchedServiceId ? (() => {
+                    const svc = servicesUsed.find((x) => x.id === watchedServiceId) || servicesUsed[0];
                     return svc.tiers.map((t, i) => (
                       <option key={i} value={String(i)}>{t.name} - {t.period ?? ""}</option>
                     ));
-                  })()
-                : <option value="">-- Select a service first --</option>
-              }
+                  })() : (
+                    <option value="">-- Select a service first --</option>
+                  )}
             </Select>
           </div>
         </div>
+
+        {servicesError && <p className="text-sm text-red-500">{servicesError}</p>}
+        {serviceTypesError && <p className="text-sm text-red-500">{serviceTypesError}</p>}
 
         {/* Price will be shown next to Submit in the footer */}
 

@@ -62,12 +62,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, tiers, ic
               <div>
                 <div className="text-sm font-semibold text-gray-700 text-left">{tier.name}</div>
               </div>
-              <div className="text-right">
-                <div className="font-bold text-lg text-(--bg-primary)">
-                  {tier.price != null ? formatIDR(tier.price) : (tier.priceDisplay ?? "-")}
+                <div className="text-right">
+                  <div className="font-bold text-lg text-(--bg-primary)">
+                    {tier.price != null ? formatIDR(tier.price) : (tier.priceDisplay ?? "-")}
+                  </div>
                 </div>
-                {tier.period && <div className="text-xs text-gray-400 mt-1">{tier.period}</div>}
-              </div>
             </div>
 
             {tier.features && tier.features.length > 0 && (
